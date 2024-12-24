@@ -1,10 +1,9 @@
-// types/admin.ts
-import type { UserRole } from '@prisma/client';
-import { SubscriptionStatus } from '@prisma/client';
+import { UserRole, SubscriptionStatus } from '@prisma/client';
 
-// Export both the enum and its type
-export { SubscriptionStatus };
-export type { UserRole };
+export interface Subscription {
+  status: SubscriptionStatus;
+  type: 'Premium' | 'Basic';
+}
 
 export interface User {
   id: string;
@@ -12,17 +11,8 @@ export interface User {
   email: string;
   role: UserRole;
   status: string;
-  subscription: {
-    status: SubscriptionStatus;
-    type: string;
-  };
+  subscription: Subscription;
 }
 
-export interface UsersTableProps {
-  users: User[];
-  onEmailUser: (user: User) => void;
-  onMessageUser: (user: User) => void;
-  onManageSubscription: (user: User) => void;
-  onUpdateRole: (userId: string, role: UserRole) => Promise<void>;
-  onUpdateSubscription: (userId: string, subscriptionStatus: SubscriptionStatus) => Promise<void>;
-}
+// Re-export Prisma's SubscriptionStatus
+export { SubscriptionStatus } from '@prisma/client';

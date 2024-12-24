@@ -4,9 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
 import { UserActions } from "./UserActions";
-import { UserRole } from '@prisma/client';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { User, UsersTableProps, SubscriptionStatus } from '@/types/admin';
+import { User } from '@/types/admin';
+import { UserRole, SubscriptionStatus } from '@prisma/client';
+
 
 
 interface UsersTableProps {

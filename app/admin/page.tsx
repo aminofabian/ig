@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { UsersTable } from "@/components/admin/users/UsersTable";
+import { User } from "@/types/admin";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -22,20 +23,8 @@ import {
   Upload
 } from "lucide-react";
 import { useUser } from "@/lib/stores/useUser";
-import { UserRole } from '@prisma/client';
 import { SubscriptionStatus } from '@prisma/client';
-import {User } from '@/types/admin';
-
-const SUBSCRIPTION_STATUS = {
-  ACTIVE: 'active',
-  INCOMPLETE: 'incomplete',
-  CANCELED: 'canceled',
-  PAST_DUE: 'past_due',
-  UNPAID: 'unpaid',
-  TRIALING: 'trialing',
-  PAUSED: 'paused'
-} as const;
-
+import { UserRole } from '@prisma/client';
 
 function AdminPage() {
   const { data: session, status } = useSession();
@@ -65,15 +54,14 @@ function AdminPage() {
     role: user.role,
     status: 'Active',
     subscription: {
-      status: user.subscription?.status || SubscriptionStatus.INCOMPLETE,
+      status: user.subscription?.status || "INCOMPLETE",
       type: user.subscription?.priceId?.includes('premium') ? 'Premium' : 'Basic'
     }
   }));
-  
 
   const overviewStats = {
     totalUsers: users.length,
-    activeSessions: users.filter(u => u.subscription?.status === SUBSCRIPTION_STATUS.ACTIVE).length,
+    activeSessions: users.filter(u => u.subscription?.status === 'ACTIVE').length,
     serverStatus: 'Healthy'
   };
 
@@ -164,6 +152,7 @@ function AdminPage() {
       
       if (!response.ok) throw new Error('Failed to update subscription');
       
+      // Refresh users list
       fetchAllUsers();
     } catch (error) {
       console.error('Error updating subscription:', error);
@@ -312,14 +301,14 @@ function AdminPage() {
           </TabsContent>
 
           <TabsContent value="users">
-          <UsersTable 
-  users={mappedUsers}
-  onEmailUser={handleEmailUser}
-  onMessageUser={handleMessageUser}
-  onManageSubscription={handleManageSubscription}
-  onUpdateRole={handleUpdateRole}
-  onUpdateSubscription={handleUpdateSubscription}
-/>
+            <UsersTable 
+              users={mappedUsers}
+              onEmailUser={handleEmailUser}
+              onMessageUser={handleMessageUser}
+              onManageSubscription={handleManageSubscription}
+              onUpdateRole={handleUpdateRole}
+              onUpdateSubscription={handleUpdateSubscription}
+            />
           </TabsContent>
 
           {/* Other tab contents with similar enhanced styling */}
@@ -429,19 +418,20 @@ function AdminPage() {
         {/* Subscription Modal */}
         <Dialog open={isSubscriptionModalOpen} onOpenChange={setIsSubscriptionModalOpen}>
           <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl">
-          <DialogHeader>
-  <DialogTitle className="text-xl font-semibold">
-    Manage Subscription - {selectedUser?.name}
-  </DialogTitle>
-  <DialogDescription className="text-zinc-400">
-    {selectedUser?.subscription?.status === SubscriptionStatus.ACTIVE
-      ? `Current Plan: ${selectedUser?.subscription.type}`
-      : `Subscription Status: ${selectedUser?.subscription?.status}`
-    }
-  </DialogDescription>
-</DialogHeader>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold">
+                Manage Subscription - {selectedUser?.name}
+              </DialogTitle>
+              <DialogDescription className="text-zinc-400">
+                {selectedUser?.subscription.status === "ACTIVE"
+                  ? `Current Plan: ${selectedUser?.subscription.type}`
+                  : `Subscription Status: ${selectedUser?.subscription.status}`
+                }
+              </DialogDescription>
+            </DialogHeader>
             <div className="space-y-4 mt-4">
-            {selectedUser?.subscription?.status === 'ACTIVE' ? (                <>
+              {selectedUser?.subscription.status === "ACTIVE" ? (
+                <>
                   <div className="p-4 bg-red-500/10 rounded-lg border border-red-500/20">
                     <h3 className="text-sm font-medium text-red-400 mb-2">Warning</h3>
                     <p className="text-sm text-zinc-400">
