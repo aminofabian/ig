@@ -6,9 +6,8 @@ import { Search, Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-reac
 import { UserActions } from "./UserActions";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { User } from '@/types/admin';
-import { UserRole, SubscriptionStatus } from '@prisma/client';
-
-
+import { UserRole } from '@prisma/client';
+import { SubscriptionStatus } from '@/types/admin';
 
 interface UsersTableProps {
   users: User[];
