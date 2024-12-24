@@ -1,5 +1,6 @@
 import { Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
-import { User} from "@/types/admin";
+import { User } from "@/types/admin";
+import { SubscriptionStatus } from "@/types/admin";
 
 interface UserActionsProps {
   user: User;
