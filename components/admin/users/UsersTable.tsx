@@ -3,28 +3,29 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
-import { User } from "@/types/admin";
 import { UserActions } from "./UserActions";
-import { UserRole, SubscriptionStatus } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { User, UsersTableProps, SubscriptionStatus } from '@/types/admin';
+
 
 interface UsersTableProps {
   users: User[];
   onEmailUser: (user: User) => void;
   onMessageUser: (user: User) => void;
   onManageSubscription: (user: User) => void;
-  onUpdateRole: (userId: string, role: UserRole) => void;
-  onUpdateSubscription: (userId: string, status: SubscriptionStatus) => void;
+  onUpdateRole: (userId: string, role: UserRole) => Promise<void>;
+  onUpdateSubscription: (userId: string, subscriptionStatus: SubscriptionStatus) => Promise<void>;
 }
 
-export function UsersTable({ 
-  users, 
-  onEmailUser, 
-  onMessageUser, 
-  onManageSubscription, 
-  onUpdateRole, 
-  onUpdateSubscription 
-}: UsersTableProps) {
+export const UsersTable: React.FC<UsersTableProps> = ({
+  users,
+  onEmailUser,
+  onMessageUser,
+  onManageSubscription,
+  onUpdateRole,
+  onUpdateSubscription,
+}) => {
   return (
     <Card className="p-6 bg-black/40 border-white/20 backdrop-blur-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
