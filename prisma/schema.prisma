@@ -231,11 +231,11 @@ enum UserRole {
 
 enum SubscriptionStatus {
   ACTIVE
-  PAST_DUE
-  CANCELED
   INCOMPLETE
-  INCOMPLETE_EXPIRED
-  TRIALING
+  CANCELED
+  PAST_DUE
   UNPAID
+  TRIALING
   PAUSED
 }
+
