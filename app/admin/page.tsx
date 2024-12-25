@@ -566,7 +566,7 @@ function AdminPage() {
           <div className="space-y-4 mt-4">
             <Textarea
               placeholder="Write your message here..."
-              className="min-h-[100px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10"
+              className="min-h-[100px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10 text-white/80"
               value={messageContent}
               onChange={(e) => setMessageContent(e.target.value)}
             />
@@ -574,7 +574,7 @@ function AdminPage() {
               <Button
                 variant="outline"
                 onClick={() => setIsMessageModalOpen(false)}
-                className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700"
+                className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700 text-white/80"
               >
                 Cancel
               </Button>
