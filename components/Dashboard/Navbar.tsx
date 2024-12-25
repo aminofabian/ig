@@ -32,7 +32,7 @@ const Navbar = () => {
     try {
       await logout();
       router.refresh(); // Revalidate the page
-      router.push("/login"); // Redirect to login page
+      router.push("/auth/logout"); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
     }
