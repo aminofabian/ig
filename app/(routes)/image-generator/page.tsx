@@ -53,7 +53,7 @@ const ImageGenerator = () => {
           <Textarea
             value={prompt}
             onChange={handlePromptChange}
-            placeholder="Enter your image prompt..."
+            placeholder="A serene Japanese zen garden at sunset, with raked sand patterns, moss-covered stones, and cherry blossom petals floating in the air. The scene is illuminated by warm golden light, creating long shadows. Shot in a minimalist style with muted colors."
             className="min-h-[200px] text-white bg-gray-900 border-gray-700"
           />
           <div className="text-right text-sm text-gray-400">
