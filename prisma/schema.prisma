@@ -8,6 +8,39 @@ datasource db {
   relationMode = "prisma"
 }
 
+// Enums
+enum UserRole {
+  ADMIN
+  USER
+  VERIFIED_USER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INCOMPLETE
+  CANCELED
+  PAST_DUE
+  UNPAID
+  TRIALING
+  PAUSED
+}
+
+enum INTEGRATIONS {
+  INSTAGRAM
+}
+
+enum MEDIATYPE {
+  IMAGE
+  VIDEO
+  CAROSEL_ALBUM
+}
+
+enum LISTENERS {
+  SMARTAI
+  MESSAGE
+}
+
+// Core models
 model User {
   id                 String          @id @default(cuid())
   firstName          String?
@@ -78,6 +111,7 @@ model PasswordResetToken {
   @@unique([email, token])
 }
 
+// Integration models
 model Integration {
   id          String       @id @default(cuid())
   userId      String
@@ -85,6 +119,7 @@ model Integration {
   token       String
   expiresAt   DateTime?
   username    String?
+  instagramId String?      @unique
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -94,22 +129,23 @@ model Integration {
   @@map("integrations")
 }
 
+// Subscription models
 model Subscription {
-  id                   String             @id @default(cuid())
-  userId               String             @unique
-  status               String            @default("active")
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  status               String    @default("active")
   priceId              String
   customerId           String?
   stripeSubscriptionId String?
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
-  cancelAtPeriodEnd    Boolean            @default(false)
+  cancelAtPeriodEnd    Boolean   @default(false)
   canceledAt           DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
   features             Json
   metadata             Json?
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
 }
@@ -129,16 +165,7 @@ model SubscriptionPlan {
   @@map("subscription_plans")
 }
 
-model Integrations {
-  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        INTEGRATIONS @default(INSTAGRAM)
-  createdAt   DateTime     @default(now())
-  User        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String?      @db.Uuid
-  token       String       @unique
-  expiresAt   DateTime?
-  instagramId String?      @unique
-}
+// Automation models
 model Automation {
   id            String           @id @default(cuid())
   name          String          @default("New Automation")
@@ -160,32 +187,47 @@ model Automation {
   listener      Listener?
   dms           Dms[]
   keywords      Keyword[]
-  posts         AutomationPost[] // Renamed to avoid conflict
+  posts         AutomationPost[]
 
   @@index([userId])
   @@index([integrationId])
   @@map("automations")
 }
 
-// Rename Post to AutomationPost to avoid conflict with hashtag Post
+model AutomationTask {
+  id           String     @id @default(cuid())
+  automationId String
+  status       String
+  result       Json?
+  error        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  startedAt    DateTime?
+  completedAt  DateTime?
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+  @@map("automation_tasks")
+}
+
 model AutomationPost {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   postid       String
   caption      String?
   media        String
-  mediaType    MEDIATYPE   @default(IMAGE)
+  mediaType    MEDIATYPE  @default(IMAGE)
   automationId String
-  automation   Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
 
   @@index([automationId])
   @@map("automation_posts")
 }
 
 model Dms {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   automationId String
-  automation   Automation  @relation(fields: [automationId], references: [id])
-  createdAt    DateTime    @default(now())
+  automation   Automation @relation(fields: [automationId], references: [id])
+  createdAt    DateTime   @default(now())
   senderId     String?
   reciever     String?
   message      String?
@@ -209,107 +251,27 @@ model Listener {
 }
 
 model Trigger {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   type         String
   automationId String
-  automation   Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
 
   @@index([automationId])
   @@map("triggers")
 }
 
 model Keyword {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   word         String
   automationId String
-  automation   Automation  @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
 
   @@unique([automationId, word])
   @@index([automationId])
   @@map("keywords")
 }
 
-// Keep your existing Hashtag, HashtagRelation, Post (for hashtags), and HashtagSearch models unchanged
-
-// Keep your existing enums
-enum MEDIATYPE {
-  IMAGE
-  VIDEO
-  CAROSEL_ALBUM
-}
-
-enum LISTENERS {
-  SMARTAI
-  MESSAGE
-}
-
-model Dms {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  Automation   Automation? @relation(fields: [automationId], references: [id])
-  automationId String?     @db.Uuid
-  createdAt    DateTime    @default(now())
-  senderId     String?
-  reciever     String?
-  message      String?
-}
-
-model Post {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  postid       String
-  caption      String?
-  media        String
-  mediaType    MEDIATYPE   @default(IMAGE)
-  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-}
-
-model Listener {
-  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String     @unique @db.Uuid
-  listener     LISTENERS  @default(MESSAGE)
-  prompt       String
-  commentReply String?
-  dmCount      Int        @default(0)
-  commentCount Int        @default(0)
-}
-
-model Trigger {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type         String
-  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-}
-
-model Keyword {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  word         String
-  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-
-  @@unique([automationId, word]) //this constraints ensure user cant use the same keyword on multiple automations
-}
-
-enum SUBSCRIPTION_PLAN {
-  PRO
-  FREE
-}
-
-enum INTEGRATIONS {
-  INSTAGRAM
-}
-
-enum MEDIATYPE {
-  IMAGE
-  VIDEO
-  CAROSEL_ALBUM
-}
-
-enum LISTENERS {
-  SMARTAI
-  MESSAGE
-}
-
+// Hashtag models
 model Hashtag {
   id                String            @id @default(cuid())
   userId            String
@@ -321,12 +283,13 @@ model Hashtag {
   hashtagSearchId   String?
   relatedHashtags   HashtagRelation[] @relation("HashtagToRelated")
   relatedToHashtags HashtagRelation[] @relation("RelatedToHashtag")
-  posts             Post[]
+  posts             HashtagPost[]
   user              User              @relation(fields: [userId], references: [id])
   hashtagSearch     HashtagSearch?    @relation(fields: [hashtagSearchId], references: [id])
 
   @@index([userId])
   @@index([hashtagSearchId])
+  @@map("hashtags")
 }
 
 model HashtagRelation {
@@ -340,9 +303,10 @@ model HashtagRelation {
   @@unique([hashtagId, relatedHashtagId])
   @@index([hashtagId])
   @@index([relatedHashtagId])
+  @@map("hashtag_relations")
 }
 
-model Post {
+model HashtagPost {
   id           String   @id @default(cuid())
   hashtagId    String
   postId       String
@@ -355,6 +319,7 @@ model Post {
 
   @@index([hashtagId])
   @@index([postId])
+  @@map("hashtag_posts")
 }
 
 model HashtagSearch {
@@ -368,21 +333,5 @@ model HashtagSearch {
 
   @@index([userId])
   @@index([query])
+  @@map("hashtag_searches")
 }
-
-enum UserRole {
-  ADMIN
-  USER
-  VERIFIED_USER
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  INCOMPLETE
-  CANCELED
-  PAST_DUE
-  UNPAID
-  TRIALING
-  PAUSED
-}
-
