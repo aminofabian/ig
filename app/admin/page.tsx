@@ -425,7 +425,7 @@ function AdminPage() {
         <Dialog open={isMessageModalOpen} onOpenChange={setIsMessageModalOpen}>
           <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-semibold">
+              <DialogTitle className="text-xl font-semibold text-white/80">
                 Send Message to {selectedUser?.name}
               </DialogTitle>
               <DialogDescription className="text-zinc-400 text-white/80">
