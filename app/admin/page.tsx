@@ -26,7 +26,19 @@ import { useUser } from "@/lib/stores/useUser";
 import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
 import { toast, Toaster } from 'sonner';
+import Pusher from "pusher";
+import PusherClient from 'pusher-js';
 
+
+
+
+interface Message {
+  id: string;
+  content: string;
+  timestamp: string;
+  fromAdmin: boolean;
+  read: boolean;
+}
 
 function AdminPage() {
   const { data: session, status } = useSession();
@@ -38,6 +50,11 @@ function AdminPage() {
   const [emailContent, setEmailContent] = useState("");
   const [messageContent, setMessageContent] = useState("");
   const [cancelReason, setCancelReason] = useState("");
+
+
+  const [messages, setMessages] = useState<Record<string, Message[]>>({});
+  const [pusherClient, setPusherClient] = useState<PusherClient | null>(null);
+
 
   useEffect(() => {
     fetchAllUsers();
@@ -60,6 +77,48 @@ function AdminPage() {
       type: user.subscription?.priceId?.includes('premium') ? 'Premium' : 'Basic'
     }
   }));
+
+  useEffect(() => {
+    // Make sure to check if we're in the browser
+    if (typeof window !== 'undefined') {
+      const pusher = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      });
+      setPusherClient(pusher);
+
+      return () => {
+        pusher.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!pusherClient || !selectedUser || !isMessageModalOpen) return;
+
+    const channel = pusherClient.subscribe(`user-${selectedUser.id}`);
+    
+    channel.bind('new-message', (data: { content: string; timestamp: string }) => {
+      setMessages(prev => ({
+        ...prev,
+        [selectedUser.id]: [
+          ...(prev[selectedUser.id] || []),
+          {
+            id: Math.random().toString(),
+            content: data.content,
+            timestamp: data.timestamp,
+            fromAdmin: true,
+            read: false
+          }
+        ]
+      }));
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [pusherClient, selectedUser, isMessageModalOpen]);
+
 
   const overviewStats = {
     totalUsers: users.length,
@@ -146,10 +205,58 @@ function AdminPage() {
 
   const handleSendMessage = async () => {
     if (!selectedUser) return;
-    // TODO: Implement message sending functionality
-    console.log("Sending message to:", selectedUser.email, messageContent);
-    setMessageContent("");
-    setIsMessageModalOpen(false);
+    
+    const loadingToast = toast.loading('Sending message...', {
+      className: 'bg-zinc-900 border border-white/20 text-white',
+    });
+    
+    try {
+      const response = await fetch('/api/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          content: messageContent,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      setMessages(prev => ({
+        ...prev,
+        [selectedUser.id]: [
+          ...(prev[selectedUser.id] || []),
+          {
+            id: Math.random().toString(),
+            content: messageContent,
+            timestamp: new Date().toISOString(),
+            fromAdmin: true,
+            read: false
+          }
+        ]
+      }));
+
+      setMessageContent("");
+      setIsMessageModalOpen(false);
+      
+      toast.dismiss(loadingToast);
+      toast.success('Message sent successfully', {
+        className: 'bg-zinc-900 border border-white/20 text-white',
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      toast.dismiss(loadingToast);
+      toast.error('Failed to send message', {
+        className: 'bg-zinc-900 border border-white/20 text-white',
+        duration: 4000,
+      });
+    }
   };
 
   const handleEmailUser = (user: User) => {
@@ -423,40 +530,65 @@ function AdminPage() {
 
         {/* Message Modal */}
         <Dialog open={isMessageModalOpen} onOpenChange={setIsMessageModalOpen}>
-          <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-white/80">
-                Send Message to {selectedUser?.name}
-              </DialogTitle>
-              <DialogDescription className="text-zinc-400 text-white/80">
-                Send a direct message to {selectedUser?.name}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 mt-4">
-              <Textarea
-                placeholder="Write your message here..."
-                className="min-h-[150px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10 text-white/80"
-                value={messageContent}
-                onChange={(e) => setMessageContent(e.target.value)}
-              />
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsMessageModalOpen(false)}
-                  className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700 text-white/80"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSendMessage}
-                  className="bg-[#f059da] hover:bg-[#f059da]/90"
-                >
-                  Send Message
-                </Button>
+        <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl max-w-2xl w-full">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">
+              Send Message to {selectedUser?.name}
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Send a direct message to {selectedUser?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Message History */}
+          <div className="space-y-4 mt-4 max-h-[300px] overflow-y-auto p-4 bg-black/20 rounded-lg">
+            {selectedUser && messages[selectedUser.id]?.map((message) => (
+              <div
+                key={message.id}
+                className={`p-3 rounded-lg ${
+                  message.fromAdmin
+                    ? 'bg-[#f059da]/10 ml-auto max-w-[80%]'
+                    : 'bg-zinc-800/50 mr-auto max-w-[80%]'
+                }`}
+              >
+                <p className="text-sm text-white/90">{message.content}</p>
+                <span className="text-xs text-white/50 mt-1 block">
+                  {new Date(message.timestamp).toLocaleTimeString()}
+                </span>
               </div>
+            ))}
+            {selectedUser && (!messages[selectedUser.id] || messages[selectedUser.id].length === 0) && (
+              <p className="text-center text-zinc-500 py-4">No message history</p>
+            )}
+          </div>
+
+          {/* Message Input */}
+          <div className="space-y-4 mt-4">
+            <Textarea
+              placeholder="Write your message here..."
+              className="min-h-[100px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10"
+              value={messageContent}
+              onChange={(e) => setMessageContent(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsMessageModalOpen(false)}
+                className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSendMessage}
+                className="bg-[#f059da] hover:bg-[#f059da]/90"
+                disabled={!messageContent.trim()}
+              >
+                Send Message
+              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
 
         {/* Subscription Modal */}
         <Dialog open={isSubscriptionModalOpen} onOpenChange={setIsSubscriptionModalOpen}>
