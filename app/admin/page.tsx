@@ -25,7 +25,7 @@ import {
 import { useUser } from "@/lib/stores/useUser";
 import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 
 
 function AdminPage() {
@@ -203,6 +203,7 @@ function AdminPage() {
 
   return (
     <div className="overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13111C] via-[#0F0F0F] to-black min-h-screen">
+         <Toaster />
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_-30%,#f059da10,transparent)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_700px_at_80%_60%,#f059da05,transparent)]" />
@@ -427,14 +428,14 @@ function AdminPage() {
               <DialogTitle className="text-xl font-semibold">
                 Send Message to {selectedUser?.name}
               </DialogTitle>
-              <DialogDescription className="text-zinc-400">
+              <DialogDescription className="text-zinc-400 text-white/80">
                 Send a direct message to {selectedUser?.name}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <Textarea
                 placeholder="Write your message here..."
-                className="min-h-[150px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10"
+                className="min-h-[150px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10 text-white/80"
                 value={messageContent}
                 onChange={(e) => setMessageContent(e.target.value)}
               />
@@ -442,7 +443,7 @@ function AdminPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsMessageModalOpen(false)}
-                  className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700"
+                  className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700 text-white/80"
                 >
                   Cancel
                 </Button>
