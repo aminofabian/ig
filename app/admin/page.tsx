@@ -96,11 +96,34 @@ function AdminPage() {
 
   const handleSendEmail = async () => {
     if (!selectedUser) return;
-    // TODO: Implement email sending functionality
-    console.log("Sending email to:", selectedUser.email, emailContent);
-    setEmailContent("");
-    setIsEmailModalOpen(false);
+    
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          toEmail: selectedUser.email,
+          content: emailContent,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+  
+      // Clear form and close modal on success
+      setEmailContent("");
+      setIsEmailModalOpen(false);
+      
+      // You might want to show a success toast/notification here
+    } catch (error) {
+      console.error('Error sending email:', error);
+      // You might want to show an error toast/notification here
+    }
   };
+  
 
   const handleSendMessage = async () => {
     if (!selectedUser) return;
@@ -363,7 +386,7 @@ function AdminPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsEmailModalOpen(false)}
-                  className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700"
+                  className="bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700 text-white/80"
                 >
                   Cancel
                 </Button>
