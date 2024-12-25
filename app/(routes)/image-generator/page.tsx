@@ -1,15 +1,23 @@
-'use client';
+'use client'
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+
+const MAX_CHARS = 1000;
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length <= MAX_CHARS) {
+      setPrompt(e.target.value);
+    }
+  };
 
   const generateImage = async () => {
     setLoading(true);
@@ -49,18 +57,22 @@ const ImageGenerator = () => {
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto">
+    <Card className="w-full max-w-xl mx-auto bg-black">
       <CardContent className="p-6 space-y-4">
-        <div className="flex gap-2">
-          <Input
+        <div className="space-y-2">
+          <Textarea
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={handlePromptChange}
             placeholder="Enter your image prompt..."
-            className="flex-1"
+            className="min-h-[200px] text-white bg-gray-900 border-gray-700"
           />
+          <div className="text-right text-sm text-gray-400">
+            {prompt.length}/{MAX_CHARS} characters
+          </div>
           <Button 
             onClick={generateImage} 
             disabled={!prompt || loading}
+            className="w-full"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
