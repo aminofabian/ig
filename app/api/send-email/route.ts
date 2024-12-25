@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const { toEmail, content } = await request.json();
     
     const data = await resend.emails.send({
-      from: 'Your App <onboarding@resend.dev>', // Update with your verified domain
+      from: 'Your App <support@igleadgen.com>', // Update with your verified domain
       to: toEmail,
       subject: 'Message from Admin Dashboard',
       html: content,
