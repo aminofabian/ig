@@ -25,6 +25,8 @@ import {
 import { useUser } from "@/lib/stores/useUser";
 import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
+import { toast } from 'sonner';
+
 
 function AdminPage() {
   const { data: session, status } = useSession();
@@ -97,6 +99,11 @@ function AdminPage() {
   const handleSendEmail = async () => {
     if (!selectedUser) return;
     
+    // Show loading toast
+    const loadingToast = toast.loading('Sending email...', {
+      className: 'bg-zinc-900 border border-white/20 text-white',
+    });
+    
     try {
       const response = await fetch('/api/send-email', {
         method: 'POST',
@@ -117,12 +124,24 @@ function AdminPage() {
       setEmailContent("");
       setIsEmailModalOpen(false);
       
-      // You might want to show a success toast/notification here
+      // Dismiss loading toast and show success toast
+      toast.dismiss(loadingToast);
+      toast.success('Email sent successfully', {
+        className: 'bg-zinc-900 border border-white/20 text-white',
+        duration: 3000,
+      });
     } catch (error) {
       console.error('Error sending email:', error);
-      // You might want to show an error toast/notification here
+      
+      // Dismiss loading toast and show error toast
+      toast.dismiss(loadingToast);
+      toast.error('Failed to send email', {
+        className: 'bg-zinc-900 border border-white/20 text-white',
+        duration: 4000,
+      });
     }
   };
+  
   
 
   const handleSendMessage = async () => {
