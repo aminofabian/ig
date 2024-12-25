@@ -25,7 +25,7 @@ export function UserActions({
       </button>
 
       <button 
-        className="p-2 hover:bg-[#f059da]/10 rounded-lg text-white/80 hover:text-[#f059da] transition-all"
+        className="p-2 hover:bg-[#f059da]/10 rounded-lg text-white hover:text-[#f059da] transition-all"
         onClick={onEmail}
         title="Send Email"
       >

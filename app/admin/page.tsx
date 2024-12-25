@@ -345,7 +345,7 @@ function AdminPage() {
         <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
           <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-semibold">
+              <DialogTitle className="text-xl font-semibold text-white/80">
                 Send Email to {selectedUser?.name}
               </DialogTitle>
               <DialogDescription className="text-zinc-400">
@@ -355,7 +355,7 @@ function AdminPage() {
             <div className="space-y-4 mt-4">
               <Textarea
                 placeholder="Write your email content here..."
-                className="min-h-[200px] bg-zinc-800/50 border-zinc-700/50 focus:border-[#f059da] focus:ring-[#f059da]/10"
+                className="min-h-[200px] bg-zinc-800/50 border-zinc-700/50 text-white/80 focus:border-[#f059da] focus:ring-[#f059da]/10"
                 value={emailContent}
                 onChange={(e) => setEmailContent(e.target.value)}
               />
