@@ -42,24 +42,24 @@ const HomePage = () => {
       description: "Discover potential followers and collaborators",
       stats: "100K+ profiles"
     },
-    {
-      label: "DM Automation",
-      icon: MessageCircle,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/automation/dm",
-      description: "Automate Instagram DMs with smart replies",
-      stats: "AI-powered"
-    },
-    {
-      label: "Smart Engagement",
-      icon: Zap,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/automation/engagement",
-      description: "Auto-engage with your target audience",
-      stats: "24/7 Active"
-    },
+    // {
+    //   label: "DM Automation",
+    //   icon: MessageCircle,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/automation/dm",
+    //   description: "Automate Instagram DMs with smart replies",
+    //   stats: "AI-powered"
+    // },
+    // {
+    //   label: "Smart Engagement",
+    //   icon: Zap,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/automation/engagement",
+    //   description: "Auto-engage with your target audience",
+    //   stats: "24/7 Active"
+    // },
     {
       label: "Hashtag Generator",
       icon: Bot,
@@ -69,15 +69,15 @@ const HomePage = () => {
       description: "Generate AI-powered hashtags for your posts",
       stats: "AI-powered"
     },
-    {
-      label: "Strategy Generator",
-      icon: Clock,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/strategy-generator",
-      description: "Schedule and auto-publish content",
-      stats: "Smart timing"
-    },
+    // {
+    //   label: "Strategy Generator",
+    //   icon: Clock,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/strategy-generator",
+    //   description: "Schedule and auto-publish content",
+    //   stats: "Smart timing"
+    // },
     {
       label: "Linktree Generator",
       icon: Target,
