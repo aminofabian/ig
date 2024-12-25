@@ -1,5 +1,5 @@
-'use client'
-import React, { useState } from 'react';
+'use client';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -24,29 +24,19 @@ const ImageGenerator = () => {
     setError('');
 
     try {
-      const response = await fetch('https://api.getimg.ai/v1/flux-schnell/text-to-image', {
+      const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GET_IMG_API_KEY}`
         },
-        body: JSON.stringify({
-          prompt,
-          negative_prompt: '',
-          steps: 20,
-          width: 512,
-          height: 512,
-          guidance_scale: 7.5,
-          model_id: 'flux-schnell'
-        })
+        body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
       if (data.image) {
         setImage(`data:image/png;base64,${data.image}`);
       } else {
-        setError('Failed to generate image');
+        setError(data.error || 'Failed to generate image');
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
