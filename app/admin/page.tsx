@@ -26,7 +26,6 @@ import { useUser } from "@/lib/stores/useUser";
 import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
 import { toast, Toaster } from 'sonner';
-import Pusher from "pusher";
 import PusherClient from 'pusher-js';
 
 

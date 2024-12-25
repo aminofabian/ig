@@ -88,14 +88,23 @@ const HomePage = () => {
       stats: "Precision tools"
     },
     {
-      label: "Analytics",
+      label: "Image Generator",
       icon: BarChart2,
       color: "text-[#f059da]",
       bgColor: "bg-[#f059da]/10",
-      href: "/analytics",
-      description: "Track your growth and engagement",
-      stats: "Real-time data"
+      href: "/image-generator",
+      description: "Generate AI-powered images for your posts",
+      stats: "AI-powered"
     },
+    // {
+    //   label: "Analytics",
+    //   icon: BarChart2,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/analytics",
+    //   description: "Track your growth and engagement",
+    //   stats: "Real-time data"
+    // },
     {
       label: "Settings",
       icon: Settings,
