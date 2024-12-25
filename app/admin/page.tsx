@@ -532,7 +532,7 @@ function AdminPage() {
         <Dialog open={isMessageModalOpen} onOpenChange={setIsMessageModalOpen}>
         <DialogContent className="bg-zinc-900/95 border-white/20 backdrop-blur-xl max-w-2xl w-full">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
+            <DialogTitle className="text-xl font-semibold text-white/80">
               Send Message to {selectedUser?.name}
             </DialogTitle>
             <DialogDescription className="text-zinc-400">
@@ -541,7 +541,7 @@ function AdminPage() {
           </DialogHeader>
           
           {/* Message History */}
-          <div className="space-y-4 mt-4 max-h-[300px] overflow-y-auto p-4 bg-black/20 rounded-lg">
+          <div className="space-y-4 mt-4 max-h-[300px] overflow-y-auto p-4 bg-black/20 rounded-lg text-white/80">
             {selectedUser && messages[selectedUser.id]?.map((message) => (
               <div
                 key={message.id}
