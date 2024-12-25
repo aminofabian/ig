@@ -2,13 +2,12 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { UserActions } from "./UserActions";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { User } from '@/types/admin';
 import { UserRole } from '@prisma/client';
-import { SubscriptionStatus } from '@/types/admin';
-
+import { SubscriptionStatus } from '@prisma/client';
 interface UsersTableProps {
   users: User[];
   onEmailUser: (user: User) => void;
@@ -17,6 +16,21 @@ interface UsersTableProps {
   onUpdateRole: (userId: string, role: UserRole) => Promise<void>;
   onUpdateSubscription: (userId: string, subscriptionStatus: SubscriptionStatus) => Promise<void>;
 }
+
+// Define available roles
+const USER_ROLES = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  MODERATOR: 'MODERATOR'
+} as const;
+
+// Define available subscription statuses
+const SUBSCRIPTION_STATUSES = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  CANCELLED: 'CANCELLED',
+  INCOMPLETE: 'INCOMPLETE'
+} as const;
 
 export const UsersTable: React.FC<UsersTableProps> = ({
   users,
@@ -75,7 +89,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-white/20">
-                      {Object.values(UserRole).map((role) => (
+                      {Object.values(USER_ROLES).map((role) => (
                         <SelectItem 
                           key={role} 
                           value={role}
@@ -98,7 +112,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-white/20">
-                      {Object.values(SubscriptionStatus).map((status) => (
+                      {Object.values(SUBSCRIPTION_STATUSES).map((status) => (
                         <SelectItem 
                           key={status} 
                           value={status}
@@ -127,4 +141,4 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       </div>
     </Card>
   );
-} 
+}

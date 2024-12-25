@@ -23,7 +23,7 @@ import {
   Upload
 } from "lucide-react";
 import { useUser } from "@/lib/stores/useUser";
-import { SubscriptionStatus } from '@prisma/client';
+import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
 
 function AdminPage() {

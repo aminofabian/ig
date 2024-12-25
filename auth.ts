@@ -10,6 +10,7 @@ import { Adapter } from "next-auth/adapters";
 // List of admin emails
 const ADMIN_EMAILS = [
   "aminofab@gmail.com",
+  "writerfabboy@gmail.com",
   "zelisline@gmail.com",
   "aminofabian@gmail.com",
   "eminselimaslan@gmail.com",

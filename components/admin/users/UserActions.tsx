@@ -1,6 +1,6 @@
 import { Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
 import { User } from "@/types/admin";
-import { SubscriptionStatus } from "@/types/admin";
+import { SubscriptionStatus } from '@prisma/client';
 
 interface UserActionsProps {
   user: User;
@@ -42,12 +42,13 @@ export function UserActions({
 
       <button
         className={`p-2 hover:bg-[#f059da]/10 rounded-lg transition-all ${
-          user.subscription.status === SubscriptionStatus.ACTIVE
+          user.subscription?.status === 'ACTIVE'
             ? 'text-emerald-500 hover:text-emerald-400'
             : 'text-red-500 hover:text-red-400'
         }`}
         onClick={onManageSubscription}
-        title={`Subscription: ${user.subscription.type} (${user.subscription.status})`}      >
+        title={`Subscription: ${user.subscription?.type} (${user.subscription?.status})`}      
+      >
         <Ban className="h-4 w-4" />
       </button>
 
@@ -66,4 +67,4 @@ export function UserActions({
       </button>
     </>
   );
-} 
+}
