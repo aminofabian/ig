@@ -306,7 +306,7 @@ model HashtagRelation {
   @@map("hashtag_relations")
 }
 
-model HashtagPost {
+model Post {
   id           String   @id @default(cuid())
   hashtagId    String
   postId       String
