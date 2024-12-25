@@ -283,7 +283,7 @@ model Hashtag {
   hashtagSearchId   String?
   relatedHashtags   HashtagRelation[] @relation("HashtagToRelated")
   relatedToHashtags HashtagRelation[] @relation("RelatedToHashtag")
-  posts             HashtagPost[]
+  posts             Post[]
   user              User              @relation(fields: [userId], references: [id])
   hashtagSearch     HashtagSearch?    @relation(fields: [hashtagSearchId], references: [id])
 
