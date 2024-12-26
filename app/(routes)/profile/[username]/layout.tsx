@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getProfileByUsername } from "../../actions/profile";
+import { getProfileByUsername } from "../../../actions/profile";
 import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from "@/components/theme-provider";
