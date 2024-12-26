@@ -270,7 +270,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   href="/signup"
                   className="inline-block px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
                 >
-                  Get Started — It's Free
+                  Get Started — It&apos;s Free
                 </a>
                 <p className="text-sm text-gray-400">
                   No credit card required • Set up in minutes • Join {profile.firstName} and others
