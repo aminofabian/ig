@@ -8,6 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/profile-images/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.sapienvault.com',
+        port: '',
+        pathname: '/storage/**',
+      },
     ],
   },
 };

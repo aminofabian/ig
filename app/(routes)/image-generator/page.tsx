@@ -1,4 +1,6 @@
+// components/ImageGenerator.tsx
 'use client';
+
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,8 +22,14 @@ const ImageGenerator = () => {
   };
 
   const generateImage = async () => {
+    if (!prompt.trim()) {
+      setError('Please enter a prompt');
+      return;
+    }
+
     setLoading(true);
     setError('');
+    setImage(''); // Clear previous image
 
     try {
       const response = await fetch('/api/generate-image', {
@@ -29,14 +37,20 @@ const ImageGenerator = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt: prompt.trim() }),
       });
 
       const data = await response.json();
-      if (data.image) {
-        setImage(`data:image/png;base64,${data.image}`);
+      
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+      
+      if (data.message?.status === 'success' && data.message.output_png) {
+        setImage(data.message.output_png);
       } else {
-        setError(data.error || 'Failed to generate image');
+        setError('Failed to generate image. Please try again.');
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -53,15 +67,15 @@ const ImageGenerator = () => {
           <Textarea
             value={prompt}
             onChange={handlePromptChange}
-            placeholder="example: A serene Japanese zen garden at sunset, with raked sand patterns, moss-covered stones, and cherry blossom petals floating in the air. The scene is illuminated by warm golden light, creating long shadows. Shot in a minimalist style with muted colors."
+            placeholder="Describe the image you want to generate..."
             className="min-h-[200px] text-white bg-gray-900 border-gray-700 placeholder:font-italic"
           />
           <div className="text-right text-sm text-gray-400">
             {prompt.length}/{MAX_CHARS} characters
           </div>
-          <Button 
-            onClick={generateImage} 
-            disabled={!prompt || loading}
+          <Button
+            onClick={generateImage}
+            disabled={!prompt.trim() || loading}
             className="w-full"
           >
             {loading ? (
@@ -71,14 +85,19 @@ const ImageGenerator = () => {
             )}
           </Button>
         </div>
-        
+
         {error && (
           <div className="text-red-500 text-sm">{error}</div>
         )}
-        
+
         {image && (
           <div className="mt-4">
-            <img src={image} alt="Generated" className="w-full rounded-lg" />
+            <img 
+              src={image} 
+              alt="Generated" 
+              className="w-full rounded-lg"
+              onError={() => setError('Failed to load the generated image')}
+            />
           </div>
         )}
       </CardContent>
