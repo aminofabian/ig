@@ -171,7 +171,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       }
     }
 
-
     return (
       <div className="w-full min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -258,6 +257,27 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           <div className="pt-6 text-center">
             <ShareButton title={params.username} />
           </div>
+
+          {/* Sign Up CTA - Only show if not logged in */}
+          {!currentUser && (
+            <div className="mt-16 text-center bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-white/10">
+              <h2 className="text-2xl font-bold mb-4">Create Your Own Link Page</h2>
+              <p className="text-gray-300 mb-6">
+                Join thousands of creators and professionals who use our platform to share their online presence. Create your personalized link page in minutes.
+              </p>
+              <div className="space-y-4">
+                <a
+                  href="/signup"
+                  className="inline-block px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                >
+                  Get Started — It's Free
+                </a>
+                <p className="text-sm text-gray-400">
+                  No credit card required • Set up in minutes • Join {profile.firstName} and others
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
