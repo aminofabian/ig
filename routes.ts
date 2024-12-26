@@ -20,7 +20,7 @@ export const publicRoutes = [
   "/auth/new-password",
   "/auth/login",
   "/auth/register",
-  "/profile/*",
+  "/profile/(.*)",  
   "/auth/error",
   "/api/instagram/hashtag",  
 ];
