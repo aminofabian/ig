@@ -33,33 +33,33 @@ const HomePage = () => {
       description: "Find trending hashtags for your niche",
       stats: "450M+ hashtags"
     },
-    {
-      label: "Find Users",
-      icon: Users,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/users",
-      description: "Discover potential followers and collaborators",
-      stats: "100K+ profiles"
-    },
-    {
-      label: "DM Automation",
-      icon: MessageCircle,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/automation/dm",
-      description: "Automate Instagram DMs with smart replies",
-      stats: "AI-powered"
-    },
-    {
-      label: "Smart Engagement",
-      icon: Zap,
-      color: "text-[#f059da]",
-      bgColor: "bg-[#f059da]/10",
-      href: "/automation/engagement",
-      description: "Auto-engage with your target audience",
-      stats: "24/7 Active"
-    },
+    // {
+    //   label: "Find Users",
+    //   icon: Users,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/users",
+    //   description: "Discover potential followers and collaborators",
+    //   stats: "100K+ profiles"
+    // },
+    // {
+    //   label: "DM Automation",
+    //   icon: MessageCircle,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/automation/dm",
+    //   description: "Automate Instagram DMs with smart replies",
+    //   stats: "AI-powered"
+    // },
+    // {
+    //   label: "Smart Engagement",
+    //   icon: Zap,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/automation/engagement",
+    //   description: "Auto-engage with your target audience",
+    //   stats: "24/7 Active"
+    // },
     {
       label: "Hashtag Generator",
       icon: Bot,
