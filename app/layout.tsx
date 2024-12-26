@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'sonner';
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/Dashboard/Navbar";
-import Sidebar from "@/components/Dashboard/Sidebar";
 import { SessionProvider } from "next-auth/react";
-import { headers } from 'next/headers';
+import LayoutClient from "@/components/LayoutClient"; // Updated Client Component
 
-const outfit = Outfit({ 
+const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
 });
@@ -18,15 +15,7 @@ export const metadata: Metadata = {
   description: "IgLeadGen - Instagram Growth and Lead Generation Tool",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const headersList = headers();
-  const pathname = headersList.get("x-invoke-path") || "";
-  const isProfilePage = pathname.match(/^\/[^/]+$/); // Matches /{username}
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -40,37 +29,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <div className="relative bg-[#0a0a0a]">
-              {/* Content */}
-              <div className="flex h-full">
-                {!isProfilePage && (
-                  <>
-                    {/* Sidebar */}
-                    <div className="hidden md:flex h-full md:w-72 md:flex-col md:fixed md:inset-y-0 z-50">
-                      <Sidebar />
-                    </div>
-
-                    {/* Main content with navbar */}
-                    <main className="md:pl-72 flex-1 min-h-screen">
-                      <Navbar />
-                      <div className="container mx-auto px-4 py-6 mt-20">
-                        <Toaster position="top-center" />
-                        {children}
-                      </div>
-                    </main>
-                  </>
-                )}
-                
-                {isProfilePage && (
-                  <main className="flex-1 min-h-screen">
-                    <Toaster position="top-center" />
-                    {children}
-                  </main>
-                )}
-              </div>
-            </div>
+            <LayoutClient>{children}</LayoutClient>
           </SessionProvider>
-          <Toaster position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>
