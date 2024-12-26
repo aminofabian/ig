@@ -65,7 +65,7 @@ export default function ProfilePage() {
             const shareUsername = profileData.username || 
               `${profileData.firstName?.toLowerCase?.() || ''}${profileData.lastName?.toLowerCase?.() || ''}`.replace(/[^a-z0-9]/g, '') || 
               'profile';
-            setShareUrl(`app.igleadgen.com/${shareUsername}`);
+            setShareUrl(`app.igleadgen.com/profile/${shareUsername}`);
           }
         }
       } catch (error) {
