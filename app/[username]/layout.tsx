@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getProfileByUsername } from "../actions/profile";
 import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
+import '@/app/globals.css';
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 
