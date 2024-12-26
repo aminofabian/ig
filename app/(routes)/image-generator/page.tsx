@@ -94,7 +94,7 @@ const ImageGenerator = () => {
           <Textarea
             value={prompt}
             onChange={handlePromptChange}
-            placeholder="Describe the image you want to generate..."
+            placeholder="Describe the image you want to generate...example:A magical forest with glowing mushrooms, a sparkling stream, and a unicorn drinking water under the moonlight."
             className="min-h-[200px] text-white bg-gray-900 border-gray-700 placeholder:font-italic"
           />
           <div className="text-right text-sm text-gray-400">
