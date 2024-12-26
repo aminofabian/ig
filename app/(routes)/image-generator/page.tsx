@@ -1,11 +1,10 @@
-// components/ImageGenerator.tsx
 'use client';
 
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Download, Save, Share2 } from 'lucide-react';
 
 const MAX_CHARS = 1000;
 
@@ -41,12 +40,12 @@ const ImageGenerator = () => {
       });
 
       const data = await response.json();
-      
+
       if (data.error) {
         setError(data.error);
         return;
       }
-      
+
       if (data.message?.status === 'success' && data.message.output_png) {
         setImage(data.message.output_png);
       } else {
@@ -57,6 +56,34 @@ const ImageGenerator = () => {
       setError('Error generating image: ' + errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadImage = () => {
+    if (image) {
+      const a = document.createElement('a');
+      a.href = image;
+      a.download = 'generated_image.png';
+      a.click();
+    }
+  };
+
+  const saveImage = () => {
+    // Implement save logic (e.g., save to user profile or database)
+    alert('Save functionality is not yet implemented.');
+  };
+
+  const shareImage = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Generated Image',
+          url: image,
+        })
+        .then(() => alert('Image shared successfully!'))
+        .catch((err) => console.error('Error sharing image:', err));
+    } else {
+      alert('Sharing is not supported in this browser.');
     }
   };
 
@@ -91,13 +118,27 @@ const ImageGenerator = () => {
         )}
 
         {image && (
-          <div className="mt-4">
-            <img 
-              src={image} 
-              alt="Generated" 
+          <div className="mt-4 space-y-4">
+            <img
+              src={image}
+              alt="Generated"
               className="w-full rounded-lg"
               onError={() => setError('Failed to load the generated image')}
             />
+            <div className="flex space-x-4 justify-center">
+              <Button onClick={downloadImage}>
+                <Download className="mr-2" />
+                Download
+              </Button>
+              <Button onClick={saveImage}>
+                <Save className="mr-2" />
+                Save
+              </Button>
+              <Button onClick={shareImage}>
+                <Share2 className="mr-2" />
+                Share
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>
