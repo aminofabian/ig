@@ -11,7 +11,7 @@ export function ShareButton({ title }: ShareButtonProps) {
   const handleShare = async () => {
     try {
       const path = window.location.pathname;
-      const shareUrl = `https://igleadgen.com${path}`;
+      const shareUrl = `https://igleadgen.com/profile/${path}`;
       
       await navigator.share({
         title,

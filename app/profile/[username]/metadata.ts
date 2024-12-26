@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getProfileByUsername } from "../actions/profile";
+import { getProfileByUsername} from "@/app/actions/profile";
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {

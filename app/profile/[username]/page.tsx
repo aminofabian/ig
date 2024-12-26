@@ -101,7 +101,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         case 'website':
           // Handle website URL formatting
           if (!username.startsWith('http://') && !username.startsWith('https://')) {
-            formattedUrl = `https://${username}`;
+            formattedUrl = `https://profile/${username}`;
           } else {
             formattedUrl = username;
           }
