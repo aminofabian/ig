@@ -50,9 +50,9 @@ export const apiAuthPrefix = "/api/auth";
   This is the default redirect path after the user has logged in
   @type {string}
   */
-export const DEFAULT_LOGIN_REDIRECT = "/app/analytics";
+export const DEFAULT_LOGIN_REDIRECT = "/";
 
 export const adminRoutes = [
-  "/reddit-analytics",
+  "/admin",
   // Add other admin routes here
 ];

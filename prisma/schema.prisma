@@ -70,6 +70,18 @@ model User {
   hashtags           Hashtag[]
   hashtagSearches    HashtagSearch[]
   accounts           Account[]
+  instagramSnapshots InstagramSnapshot[]
+
+  // Instagram Profile Fields
+  instagramProfileId String?   @unique
+  instagramVerified  Boolean?  @default(false)
+  instagramPrivate   Boolean?  @default(false)
+  postsCount         Int?      @default(0)
+  followersCount     Int?      @default(0)
+  followingCount     Int?      @default(0)
+  instagramBio       String?   // separate from existing bio
+  instagramFullName  String?
+  instagramImage     String?   // separate from existing image
 
   @@map("users")
 }
@@ -334,4 +346,17 @@ model HashtagSearch {
   @@index([userId])
   @@index([query])
   @@map("hashtag_searches")
+}
+
+model InstagramSnapshot {
+  id            String   @id @default(cuid())
+  userId        String
+  timestamp     DateTime @default(now())
+  postsCount    Int
+  followersCount Int
+  followingCount Int
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("instagram_snapshots")
 }

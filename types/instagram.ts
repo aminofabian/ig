@@ -21,3 +21,19 @@ export interface HashtagSearchResponse {
     next?: string;
   };
 }
+
+
+export interface InstagramUserData {
+  username?: string;
+  full_name?: string;
+  biography?: string;
+  followers?: number;
+  following?: number;
+  edge_followed_by?: {
+    count: number;
+  };
+  edge_follow?: {
+    count: number;
+  };
+  [key: string]: any;
+}
