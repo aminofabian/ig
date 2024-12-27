@@ -10,7 +10,6 @@ export async function GET() {
     }
 
     const [currentUser, thirtyDaysAgo] = await Promise.all([
-      // Get current user data
       prisma.user.findUnique({
         where: { id: session.user.id },
         select: {
@@ -26,7 +25,6 @@ export async function GET() {
           instagramImage: true,
         }
       }),
-      // Get snapshot from ~30 days ago
       prisma.instagramSnapshot.findFirst({
         where: {
           userId: session.user.id,
@@ -40,10 +38,14 @@ export async function GET() {
       })
     ]);
 
+    if (!currentUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     const changes = thirtyDaysAgo ? {
-      postsGrowth: currentUser!.postsCount - thirtyDaysAgo.postsCount,
-      followersGrowth: currentUser!.followersCount - thirtyDaysAgo.followersCount,
-      followingGrowth: currentUser!.followingCount - thirtyDaysAgo.followingCount,
+      postsGrowth: (currentUser.postsCount ?? 0) - thirtyDaysAgo.postsCount,
+      followersGrowth: (currentUser.followersCount ?? 0) - thirtyDaysAgo.followersCount,
+      followingGrowth: (currentUser.followingCount ?? 0) - thirtyDaysAgo.followingCount,
     } : null;
 
     return NextResponse.json({
