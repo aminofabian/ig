@@ -1,61 +1,49 @@
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import db from "@/lib/db";
 
 export async function GET() {
   try {
     const session = await auth();
+
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const [currentUser, thirtyDaysAgo] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: {
-          instagram: true,
-          instagramProfileId: true,
-          instagramVerified: true,
-          instagramPrivate: true,
-          postsCount: true,
-          followersCount: true,
-          followingCount: true,
-          instagramBio: true,
-          instagramFullName: true,
-          instagramImage: true,
-        }
+    // Fetch both snapshots and hashtags
+    const [snapshots, hashtags] = await Promise.all([
+      db.instagramSnapshot.findMany({
+        where: { userId: session.user.id },
+        orderBy: { timestamp: 'asc' }
       }),
-      prisma.instagramSnapshot.findFirst({
-        where: {
-          userId: session.user.id,
-          timestamp: {
-            lte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-          }
-        },
-        orderBy: {
-          timestamp: 'desc'
+      db.hashtag.findMany({
+        where: { userId: session.user.id },
+        orderBy: { searchedAt: 'desc' },
+        include: {
+          posts: true
         }
       })
     ]);
 
-    if (!currentUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
+    // Calculate performance metrics
+    const analytics = {
+      snapshots,
+      hashtags,
+      summary: {
+        totalPosts: snapshots[snapshots.length - 1]?.postsCount ?? 0,
+        followerGrowth: snapshots.length > 1 
+          ? (snapshots[snapshots.length - 1]?.followersCount ?? 0) - (snapshots[0]?.followersCount ?? 0)
+          : 0,
+        topHashtags: hashtags
+          .sort((a, b) => (b.avgLikes ?? 0) - (a.avgLikes ?? 0))
+          .slice(0, 5)
+      }
+    };
 
-    const changes = thirtyDaysAgo ? {
-      postsGrowth: (currentUser.postsCount ?? 0) - thirtyDaysAgo.postsCount,
-      followersGrowth: (currentUser.followersCount ?? 0) - thirtyDaysAgo.followersCount,
-      followingGrowth: (currentUser.followingCount ?? 0) - thirtyDaysAgo.followingCount,
-    } : null;
-
-    return NextResponse.json({
-      ...currentUser,
-      changes
-    });
+    return NextResponse.json(analytics);
+    
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch Instagram analytics' },
-      { status: 500 }
-    );
+    console.error('[INSTAGRAM_ANALYTICS]', error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 } 

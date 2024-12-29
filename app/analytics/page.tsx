@@ -3,66 +3,77 @@
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-interface HashtagAnalytics {
+interface InstagramSnapshot {
   id: string;
-  name: string;
-  mediaCount: number;
-  avgLikes: number;
-  avgComments: number;
-  createdAt: string;
+  timestamp: string;
+  postsCount: number;
+  followersCount: number;
+  followingCount: number;
 }
 
 interface EngagementTrend {
-  date: string;
-  likes: number;
-  comments: number;
-  posts: number;
+  timestamp: string;
+  postsCount: number;
+  followersCount: number;
+  followingCount: number;
+}
+
+interface Analytics {
+  snapshots: InstagramSnapshot[];
+  hashtags: {
+    id: string;
+    name: string;
+    postsCount: number;
+    avgLikes: number;
+    avgComments: number;
+    searchedAt: string;
+  }[];
+  summary: {
+    totalPosts: number;
+    followerGrowth: number;
+    topHashtags: any[];
+  };
 }
 
 export default function AnalyticsPage() {
-  const [hashtags, setHashtags] = useState<HashtagAnalytics[]>([]);
+  const { data: session } = useSession();
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedMetric, setSelectedMetric] = useState<'likes' | 'comments' | 'posts'>('likes');
+  const [selectedMetric, setSelectedMetric] = useState<'postsCount' | 'followersCount' | 'followingCount'>('followersCount');
   const [timeframe, setTimeframe] = useState<'7d' | '30d' | '90d'>('30d');
 
-  // Fetch saved hashtags
   useEffect(() => {
-    const fetchHashtags = async () => {
+    const fetchAnalytics = async () => {
       try {
-        const response = await fetch('/api/hashtags');
+        const response = await fetch('/api/instagram-analytics');
         const data = await response.json();
-        setHashtags(data);
+        setAnalytics(data);
       } catch (error) {
-        console.error('Error fetching hashtags:', error);
+        console.error('Error fetching analytics:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHashtags();
-  }, []);
+    if (session?.user?.id) {
+      fetchAnalytics();
+    }
+  }, [session?.user?.id]);
 
-  // Calculate engagement metrics
-  const calculateEngagementRate = (likes: number, comments: number, mediaCount: number) => {
-    return ((likes + comments) / mediaCount * 100).toFixed(2);
+  // Format data for charts
+  const formatTrendData = (data: InstagramSnapshot[]): EngagementTrend[] => {
+    return data.map(snapshot => ({
+      timestamp: new Date(snapshot.timestamp).toLocaleDateString(),
+      postsCount: snapshot.postsCount,
+      followersCount: snapshot.followersCount,
+      followingCount: snapshot.followingCount
+    }));
   };
 
-  // Generate mock trend data (replace with real data in production)
-  const generateTrendData = (days: number): EngagementTrend[] => {
-    return Array.from({ length: days }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (days - i - 1));
-      return {
-        date: date.toISOString().split('T')[0],
-        likes: Math.floor(Math.random() * 1000) + 500,
-        comments: Math.floor(Math.random() * 200) + 50,
-        posts: Math.floor(Math.random() * 20) + 5,
-      };
-    });
-  };
-
-  const trendData = generateTrendData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
+  const trendData = formatTrendData(analytics?.snapshots || []);
 
   if (loading) {
     return (
@@ -74,18 +85,58 @@ export default function AnalyticsPage() {
 
   return (
     <div className="p-6 space-y-8">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Total Posts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-[#f059da]">
+              {analytics?.summary.totalPosts.toLocaleString()}
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Follower Growth</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-[#f059da]">
+              {(analytics?.summary.followerGrowth ?? 0) > 0 ? '+' : ''}
+              {(analytics?.summary.followerGrowth ?? 0).toLocaleString()}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Top Hashtag</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-[#f059da]">
+              #{analytics?.summary.topHashtags[0]?.name || 'N/A'}
+            </p>
+            <p className="text-sm text-gray-400">
+              {analytics?.summary.topHashtags[0]?.avgLikes.toLocaleString()} avg likes
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-white">Hashtag Analytics Dashboard</h1>
         <div className="flex gap-4">
           <select 
             value={selectedMetric}
-            onChange={(e) => setSelectedMetric(e.target.value as 'likes' | 'comments' | 'posts')}
+            onChange={(e) => setSelectedMetric(e.target.value as 'postsCount' | 'followersCount' | 'followingCount')}
             className="bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-white"
           >
-            <option value="likes">Likes</option>
-            <option value="comments">Comments</option>
-            <option value="posts">Posts</option>
+            <option value="postsCount">Posts</option>
+            <option value="followersCount">Followers</option>
+            <option value="followingCount">Following</option>
           </select>
           <select 
             value={timeframe}
@@ -107,7 +158,7 @@ export default function AnalyticsPage() {
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
               <XAxis 
-                dataKey="date" 
+                dataKey="timestamp" 
                 stroke="rgba(255,255,255,0.5)"
                 tick={{ fill: 'rgba(255,255,255,0.5)' }}
               />
@@ -136,68 +187,92 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Hashtag Performance Comparison */}
+      {/* Hashtag Performance */}
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-black/20 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-          <h2 className="text-xl font-semibold mb-4 text-white">Hashtag Performance</h2>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hashtags}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="rgba(255,255,255,0.5)"
-                  tick={{ fill: 'rgba(255,255,255,0.5)' }}
-                />
-                <YAxis 
-                  stroke="rgba(255,255,255,0.5)"
-                  tick={{ fill: 'rgba(255,255,255,0.5)' }}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Bar dataKey="avgLikes" fill="#f059da" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Top Performing Hashtags */}
-        <div className="bg-black/20 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-          <h2 className="text-xl font-semibold mb-4 text-white">Top Performing Hashtags</h2>
-          <div className="space-y-4">
-            {hashtags
-              .sort((a, b) => {
-                const engagementA = Number(calculateEngagementRate(a.avgLikes || 0, a.avgComments || 0, a.mediaCount || 0));
-                const engagementB = Number(calculateEngagementRate(b.avgLikes || 0, b.avgComments || 0, b.mediaCount || 0));
-                return engagementB - engagementA;
-              })
-              .slice(0, 5)
-              .map((hashtag) => (
+        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Hashtag Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {analytics?.hashtags.slice(0, 5).map((hashtag) => (
                 <div 
                   key={hashtag.id}
-                  className="flex justify-between items-center p-4 bg-black/30 rounded-lg border border-white/10"
+                  className="flex justify-between items-center p-4 bg-black/30 rounded-lg"
                 >
                   <div>
                     <h3 className="text-white font-medium">#{hashtag.name}</h3>
                     <p className="text-sm text-gray-400">
-                      Engagement Rate: {calculateEngagementRate(hashtag.avgLikes || 0, hashtag.avgComments || 0, hashtag.mediaCount || 0)}%
+                      {new Date(hashtag.searchedAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[#f059da]">{(hashtag.avgLikes || 0).toLocaleString()} avg likes</p>
-                    <p className="text-sm text-gray-400">{(hashtag.mediaCount || 0).toLocaleString()} posts</p>
+                    <p className="text-[#f059da]">{hashtag.avgLikes.toLocaleString()} avg likes</p>
+                    <p className="text-sm text-gray-400">{hashtag.postsCount.toLocaleString()} posts</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Performance Summary */}
+        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Performance Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 text-white">
+              <p>
+                <span className="font-semibold">Account Growth:</span> Your account has 
+                {(analytics?.summary.followerGrowth ?? 0) > 0 ? ' gained ' : ' lost '}
+                {Math.abs(analytics?.summary.followerGrowth ?? 0).toLocaleString()} followers
+                since first snapshot.
+              </p>
+              <p>
+                <span className="font-semibold">Content Performance:</span> Your most engaging hashtag
+                is #{analytics?.summary.topHashtags[0]?.name} with an average of
+                {' '}{analytics?.summary.topHashtags[0]?.avgLikes.toLocaleString()} likes per post.
+              </p>
+              <p>
+                <span className="font-semibold">Posting Activity:</span> You have shared
+                {' '}{analytics?.summary.totalPosts.toLocaleString()} posts in total.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-black/20 backdrop-blur-sm border-white/10 mt-6">
+        <CardHeader>
+          <CardTitle className="text-white">All Hashtags Ranked</CardTitle>
+          <p className="text-sm text-gray-400">Sorted by average likes</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {analytics?.hashtags
+              .sort((a, b) => (b.avgLikes ?? 0) - (a.avgLikes ?? 0))
+              .map((hashtag, index) => (
+                <div 
+                  key={hashtag.id}
+                  className="flex items-center p-4 bg-black/30 rounded-lg border border-white/10"
+                >
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#f059da]/10 text-[#f059da] font-bold mr-3">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-medium">#{hashtag.name}</h3>
+                    <div className="flex items-center gap-3 text-sm text-gray-400">
+                      <span>{hashtag.avgLikes.toLocaleString()} avg likes</span>
+                      <span>•</span>
+                      <span>{hashtag.postsCount.toLocaleString()} posts</span>
+                    </div>
                   </div>
                 </div>
               ))}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 } 
