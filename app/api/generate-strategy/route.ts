@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch('https://claude-3-5-sonnet.p.rapidapi.com/', {
+    const response = await fetch('https://open-ai21.p.rapidapi.com/claude3', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
