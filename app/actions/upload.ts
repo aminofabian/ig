@@ -62,12 +62,6 @@ export async function uploadProfileImage(formData: FormData) {
         CacheControl: 'public, max-age=31536000', // Cache for 1 year
       });
 
-      console.log("Uploading to S3 with config:", {
-        bucket: S3_BUCKET_NAME,
-        region: S3_REGION,
-        key,
-        contentType: `image/${format}`,
-      });
 
       await s3.send(command);
       const imageUrl = getPublicUrl(key);

@@ -60,7 +60,6 @@ export const {
             where: { id: user.id },
             data: updateData,
           });
-          console.log("User updated in linkAccount:", updatedUser);
         } catch (error) {
           console.error("Error updating user in linkAccount:", error);
           throw error;
@@ -70,7 +69,6 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log("SignIn callback:", { user, account });
 
       if (!user.email) return false;
       
@@ -103,7 +101,6 @@ export const {
     },
 
     async session({ token, session }) {
-      console.log("Session callback - Input:", { token, session });
       
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -116,12 +113,10 @@ export const {
         session.user.emailVerified = token.emailVerified as Date | null;
       }
 
-      console.log("Session callback - Output:", session);
       return session;
     },
 
     async jwt({ token, user, account, profile }) {
-      console.log("JWT callback - Input:", { token, user, account, profile });
       
       if (!token.sub) return token;
 

@@ -65,7 +65,6 @@ Format the response in markdown with clear sections and bullet points.`
     }
 
     const data = await response.json();
-    console.log('Raw API response:', JSON.stringify(data, null, 2));
 
     if (!data?.choices?.[0]?.message?.content) {
       console.error('Unexpected API response structure:', data);

@@ -58,23 +58,23 @@ export default function SettingsPage() {
 
       <Tabs defaultValue="account" className="space-y-6">
         <TabsList className="bg-gradient-to-r from-zinc-900/80 to-zinc-900/50 border border-zinc-800/50 p-1">
-          <TabsTrigger value="account" className="data-[state=active]:bg-[#f059da]/10 data-[state=active]:text-white transition-colors">
+          <TabsTrigger value="account" className="data-[state=active]:bg-[#f059da]/10 text-slate-100 data-[state=active]:text-white transition-colors">
             <User className="h-4 w-4 mr-2" />
             Account
           </TabsTrigger>
-          <TabsTrigger value="automation" className="data-[state=active]:bg-[#f059da]/10 data-[state=active]:text-white transition-colors">
+          <TabsTrigger value="automation" className="data-[state=active]:bg-[#f059da]/10 text-slate-100 data-[state=active]:text-white transition-colors">
             <Bot className="h-4 w-4 mr-2" />
             Automation
           </TabsTrigger>
-          <TabsTrigger value="security" className="data-[state=active]:bg-[#f059da]/10 data-[state=active]:text-white transition-colors">
+          <TabsTrigger value="security" className="data-[state=active]:bg-[#f059da]/10 text-slate-100 data-[state=active]:text-white transition-colors">
             <Lock className="h-4 w-4 mr-2" />
             Security
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="data-[state=active]:bg-[#f059da]/10 data-[state=active]:text-white transition-colors">
+          <TabsTrigger value="notifications" className="data-[state=active]:bg-[#f059da]/10 text-slate-100 data-[state=active]:text-white transition-colors">
             <Bell className="h-4 w-4 mr-2" />
             Notifications
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="data-[state=active]:bg-[#f059da]/10 data-[state=active]:text-white transition-colors">
+          <TabsTrigger value="appearance" className="data-[state=active]:bg-[#f059da]/10 text-slate-100 data-[state=active]:text-white transition-colors">
             <Palette className="h-4 w-4 mr-2" />
             Appearance
           </TabsTrigger>
@@ -118,7 +118,7 @@ export default function SettingsPage() {
                     className="bg-zinc-900/50 border-zinc-800 text-white placeholder:text-white/40 focus:ring-[#f059da]/50"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 text-white">
                   <Label>Account Type</Label>
                   <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-800/50 border border-zinc-700">
                     <Shield className="w-4 h-4 text-[#f059da]" />

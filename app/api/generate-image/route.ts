@@ -30,7 +30,6 @@ export async function POST(request: Request) {
       }
     };
 
-    console.log('Making request to RapidAPI with prompt:', prompt);
 
     const response = await fetch('https://ai-image-generator14.p.rapidapi.com/', {
       method: 'POST',
@@ -58,7 +57,6 @@ export async function POST(request: Request) {
     }
 
     const responseData = await response.json();
-    console.log('Successful API Response:', responseData);
     
     // Return response with CORS headers
     return NextResponse.json(responseData, { headers: corsHeaders });

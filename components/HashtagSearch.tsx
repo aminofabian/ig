@@ -273,7 +273,7 @@ export default function HashtagSearch() {
         {hashtagData && (
           <div className="space-y-8">
             {/* Hashtag Overview */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-white/10">
               <div className="flex items-center gap-6 mb-6">
                 {hashtagData.items?.[0]?.user?.profile_pic_url && (
                   <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-blue-100">
@@ -348,11 +348,11 @@ export default function HashtagSearch() {
             </div>
 
             {/* Posts Grid */}
-            <div className="rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-6">Recent Posts</h2>
+            <div className="rounded-lg shadow-lg p-6 bg-black/20 backdrop-blur-sm border border-white/10">
+              <h2 className="text-2xl font-bold mb-6 text-white">Recent Posts</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                 {getCurrentPagePosts().map((item) => (
-                  <div key={item.id} className="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                  <div key={item.id} className="bg-black/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-white/10">
                     <div className="relative pb-[100%]">
                       {item.thumbnail_url && (
                         <img
@@ -381,18 +381,18 @@ export default function HashtagSearch() {
                                 className="w-10 h-10 rounded-full"
                               />
                             )}
-                            <span className="font-medium text-gray-900">{item.user.username}</span>
+                            <span className="font-medium text-white">{item.user.username}</span>
                           </div>
                         )}
                         {item.taken_at && (
-                          <span className="text-sm text-gray-500 hidden md:block">{formatDate(item.taken_at)}</span>
+                          <span className="text-sm text-gray-400 hidden md:block">{formatDate(item.taken_at)}</span>
                         )}
                       </div>
 
                       {/* Caption and Hashtags */}
                       {item.caption_text && (
                         <div className="space-y-3">
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-300">
                             {formatCaption(item.caption_text)}
                           </p>
                           <div className="flex flex-wrap gap-2">
@@ -404,7 +404,7 @@ export default function HashtagSearch() {
                                   setSearchTerm(tag);
                                   searchHashtag(tag);
                                 }}
-                                className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors"
+                                className="text-xs bg-[#f059da]/10 text-[#f059da] px-3 py-1 rounded-full hover:bg-[#f059da]/20 transition-colors"
                               >
                                 {hashtag}
                               </button>
@@ -414,7 +414,7 @@ export default function HashtagSearch() {
                       )}
 
                       {/* Engagement Stats */}
-                      <div className="flex justify-between text-sm text-gray-500 pt-2 border-t">
+                      <div className="flex justify-between text-sm text-gray-400 pt-2 border-t border-white/10">
                         <div className="flex items-center">
                           <svg className="w-5 h-5 text-red-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
@@ -439,7 +439,7 @@ export default function HashtagSearch() {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
                   >
                     Previous
                   </button>
@@ -449,8 +449,8 @@ export default function HashtagSearch() {
                       onClick={() => handlePageChange(pageNum)}
                       className={`px-4 py-2 rounded-lg ${
                         currentPage === pageNum
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                          ? 'bg-[#f059da] text-white'
+                          : 'bg-black/30 text-white hover:bg-black/40 border border-white/10'
                       }`}
                     >
                       {pageNum}
@@ -459,7 +459,7 @@ export default function HashtagSearch() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
                   >
                     Next
                   </button>
@@ -468,12 +468,12 @@ export default function HashtagSearch() {
             </div>
 
             {/* Insights Section */}
-            <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
-              <h2 className="text-2xl font-bold mb-4">How to Use This Data</h2>
+            <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 border border-white/10">
+              <h2 className="text-2xl font-bold mb-4 text-white">How to Use This Data</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-blue-600">Engagement Insights</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                  <h3 className="text-lg font-semibold text-[#f059da]">Engagement Insights</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
                     <li>
                       <strong>Average Likes ({formatCount(avgLikes)}):</strong> Posts with likes above this number are performing well for this hashtag
                     </li>
@@ -487,8 +487,8 @@ export default function HashtagSearch() {
                 </div>
                 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-blue-600">Content Strategy</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                  <h3 className="text-lg font-semibold text-[#f059da]">Content Strategy</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
                     <li>
                       <strong>Related Hashtags:</strong> Click on hashtags in posts to discover related communities and expand your reach
                     </li>
@@ -501,9 +501,9 @@ export default function HashtagSearch() {
                   </ul>
                 </div>
 
-                <div className="md:col-span-2 bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-600 mb-2">Pro Tips</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                <div className="md:col-span-2 bg-black/30 p-4 rounded-lg border border-white/10">
+                  <h3 className="text-lg font-semibold text-[#f059da] mb-2">Pro Tips</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
                     <li>
                       Mix popular hashtags ({hashtagData.additional_data?.media_count || 0 > 500000 ? 'like this one' : 'larger than this'}) with niche ones for better visibility
                     </li>
@@ -521,14 +521,14 @@ export default function HashtagSearch() {
         )}
 
         {!searchTerm && !loading && (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-lg">Enter a hashtag to start searching</p>
+          <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
+            <p className="text-gray-400 text-lg">Enter a hashtag to start searching</p>
           </div>
         )}
 
         {hashtagData === null && !loading && searchTerm && (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-lg">No results found for #{searchTerm}</p>
+          <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
+            <p className="text-gray-400 text-lg">No results found for #{searchTerm}</p>
           </div>
         )}
       </div>

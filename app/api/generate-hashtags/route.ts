@@ -40,7 +40,6 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
-    console.log('Raw API response:', JSON.stringify(data, null, 2)); // Debug log
 
     // Extract hashtags from the Claude API response structure
     if (!data?.choices?.[0]?.message?.content) {
@@ -52,7 +51,6 @@ export async function POST(req: Request) {
     }
 
     const hashtags = data.choices[0].message.content;
-    console.log('Extracted hashtags:', hashtags); // Debug log
     return NextResponse.json({ hashtags });
   } catch (error) {
     console.error('Error in generate-hashtags route:', error);
