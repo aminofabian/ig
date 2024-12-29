@@ -111,6 +111,7 @@ export const {
         session.user.role = token.role as UserRole;
         session.user.image = token.picture as string;
         session.user.emailVerified = token.emailVerified as Date | null;
+        session.user.bio = token.bio as string;
       }
 
       return session;
@@ -140,6 +141,7 @@ export const {
       token.role = existingUser.role;
       token.picture = existingUser.image;
       token.emailVerified = existingUser.emailVerified;
+      token.bio = existingUser.bio;
 
       console.log("JWT callback - Output token:", token);
       return token;
