@@ -34,11 +34,57 @@ import {
   Zap,
   Target,
   Database,
+  Loader2,
 } from "lucide-react";
 import { useSession } from 'next-auth/react';
+import { useState } from "react";
+import { updateSettingsAction } from "@/app/actions/update-settings";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: session?.user?.firstName || '',
+    lastName: session?.user?.lastName || '',
+    email: session?.user?.email || '',
+    bio: session?.user?.bio || ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const result = await updateSettingsAction(formData);
+      
+      if (result.success) {
+        // Update the session to reflect the changes
+        await updateSession({
+          ...session,
+          user: {
+            ...session?.user,
+            ...formData
+          }
+        });
+        
+        toast.success("Settings updated successfully!");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Failed to update settings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -89,43 +135,70 @@ export default function SettingsPage() {
                   Update your account profile details.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white/90" htmlFor="name">Name</Label>
-                    <Input 
-                      id="name" 
-                      value={`${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`}
-                      className="bg-zinc-900/50 border-zinc-800 text-white/90 focus:ring-[#f059da]/50"
-                      readOnly
-                    />
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-white/90" htmlFor="firstName">First Name</Label>
+                      <Input 
+                        id="firstName" 
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className="bg-zinc-900/50 border-zinc-800 text-white/90 focus:ring-[#f059da]/50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-white/90" htmlFor="lastName">Last Name</Label>
+                      <Input 
+                        id="lastName" 
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className="bg-zinc-900/50 border-zinc-800 text-white/90 focus:ring-[#f059da]/50"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-white/90" htmlFor="email">Email</Label>
                     <Input 
                       id="email" 
-                      value={session?.user?.email || ''}
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       className="bg-zinc-900/50 border-zinc-800 text-white/90 focus:ring-[#f059da]/50"
-                      readOnly
                     />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-white/90" htmlFor="bio">Bio</Label>
-                  <Input 
-                    id="bio" 
-                    placeholder="Tell us about yourself" 
-                    className="bg-zinc-900/50 border-zinc-800 text-white placeholder:text-white/40 focus:ring-[#f059da]/50"
-                  />
-                </div>
-                <div className="space-y-2 text-white">
-                  <Label>Account Type</Label>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-800/50 border border-zinc-700">
-                    <Shield className="w-4 h-4 text-[#f059da]" />
-                    <span>{session?.user?.role === 'ADMIN' ? 'Administrator' : 'Standard User'}</span>
+                  <div className="space-y-2">
+                    <Label className="text-white/90" htmlFor="bio">Bio</Label>
+                    <Input 
+                      id="bio" 
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      placeholder="Tell us about yourself" 
+                      className="bg-zinc-900/50 border-zinc-800 text-white placeholder:text-white/40 focus:ring-[#f059da]/50"
+                    />
                   </div>
-                </div>
-                <Button className="bg-[#f059da] hover:bg-[#f059da]/90 text-white">Save Changes</Button>
+                  <div className="space-y-2 text-white">
+                    <Label>Account Type</Label>
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-800/50 border border-zinc-700">
+                      <Shield className="w-4 h-4 text-[#f059da]" />
+                      <span>{session?.user?.role === 'ADMIN' ? 'Administrator' : 'Standard User'}</span>
+                    </div>
+                  </div>
+                  <Button 
+                    type="submit"
+                    disabled={loading}
+                    className="bg-[#f059da] hover:bg-[#f059da]/90 text-white"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
 
