@@ -1,62 +1,45 @@
 'use server';
 
-import https from 'https';
-
 export async function generateHashtagsAction(input: string) {
   if (!input) {
     throw new Error('Input is required');
   }
 
-  return new Promise((resolve, reject) => {
-    const options = {
+  try {
+    const response = await fetch('https://open-ai21.p.rapidapi.com/claude3', {
       method: 'POST',
-      hostname: 'claude-2-1.p.rapidapi.com',
-      port: null,
-      path: '/messages',
       headers: {
-        'x-rapidapi-key': '52655f1cfbmshc28794a26461c71p1a3967jsnc854ec10622d',
-        'x-rapidapi-host': 'claude-2-1.p.rapidapi.com',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const request = https.request(options, function (res) {
-      const chunks: Buffer[] = [];
-
-      res.on('data', function (chunk) {
-        chunks.push(chunk);
-      });
-
-      res.on('end', function () {
-        const body = Buffer.concat(chunks);
-        try {
-          const response = JSON.parse(body.toString());
-          resolve(response);
-        } catch (error) {
-          console.error('Error parsing response:', error, body.toString());
-          reject(new Error('Failed to parse API response'));
-        }
-      });
+        'Content-Type': 'application/json',
+        'x-rapidapi-key': process.env.RAPIDAPI_AI_KEY!,
+        'x-rapidapi-host': 'open-ai21.p.rapidapi.com'
+      },
+      body: JSON.stringify({
+        messages: [
+          {
+            role: 'user',
+            content: `Generate relevant hashtags for the following content. Return only hashtags separated by spaces, no explanations or other text: ${input}`
+          }
+        ],
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7,
+        max_tokens: 1024
+      })
     });
 
-    request.on('error', function (error) {
-      console.error('Error in API request:', error);
-      reject(new Error('Failed to generate hashtags'));
-    });
+    if (!response.ok) {
+      console.error('API Response:', await response.text());
+      throw new Error(`API request failed with status ${response.status}`);
+    }
 
-    const message = `Generate relevant hashtags for the following content. Return only hashtags separated by spaces, no explanations or other text: ${input}`;
-
-    request.write(JSON.stringify({
-      model: 'claude-3-opus-20240229',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: message
-        }
-      ]
-    }));
-
-    request.end();
-  });
+    const data = await response.json();
+    console.log('API Response data:', data);
+    
+    // Extract hashtags from the result property
+    const hashtagContent = data.result || '';
+    return { hashtags: hashtagContent };
+    
+  } catch (error) {
+    console.error('Error in generateHashtagsAction:', error);
+    throw new Error('Failed to generate hashtags');
+  }
 }

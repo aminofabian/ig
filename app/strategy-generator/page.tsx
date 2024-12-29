@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { generateStrategyAction } from '../actions/generate-strategy';
 
 export default function StrategyGenerator() {
   const router = useRouter();
@@ -34,36 +35,20 @@ export default function StrategyGenerator() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/generate-strategy", {
-        method: "POST",
-        body: JSON.stringify({
-          businessName,
-          businessDescription,
-          targetAudience,
-          goals
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const result = await generateStrategyAction({
+        businessName,
+        businessDescription,
+        targetAudience,
+        goals
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        console.error('Failed to parse response:', parseError);
-        throw new Error('Invalid response from server');
+      console.log('Generated strategy result:', result); // Debug log
+      
+      if (!result || !result.strategy) {
+        throw new Error('No strategy received');
       }
 
-      if (!response.ok || data.error) {
-        throw new Error(data.error || 'Failed to generate strategy');
-      }
-
-      if (!data.strategy) {
-        throw new Error('No strategy received from server');
-      }
-
-      setStrategy(data.strategy);
+      setStrategy(result.strategy);
       toast.success("Strategy generated successfully!");
     } catch (error: any) {
       console.error('Error:', error);
@@ -205,8 +190,36 @@ export default function StrategyGenerator() {
 
           <Card className="p-6 bg-zinc-900 border-zinc-700 min-h-[300px] overflow-auto">
             {strategy ? (
-              <div className="prose prose-invert max-w-none">
-                <ReactMarkdown>{strategy}</ReactMarkdown>
+              <div className="prose prose-invert max-w-none text-white
+                prose-headings:text-white
+                prose-h1:text-2xl prose-h1:font-bold prose-h1:mb-6
+                prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-4 prose-h2:mt-6
+                prose-h3:text-lg prose-h3:font-medium prose-h3:mb-3 prose-h3:mt-4
+                prose-p:mb-4 prose-p:text-zinc-300 prose-p:leading-relaxed
+                prose-ul:mb-4 prose-ul:text-zinc-300
+                prose-li:mb-2 prose-li:leading-relaxed
+                prose-strong:text-white prose-strong:font-semibold
+                prose-em:text-zinc-200
+                prose-blockquote:border-l-4 prose-blockquote:border-zinc-700 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-zinc-400
+                [&>*:first-child]:mt-0
+                [&>*:last-child]:mb-0">
+                <ReactMarkdown
+                  components={{
+                    // Custom components for markdown elements
+                    h1: ({node, ...props}) => <h1 className="border-b border-zinc-700 pb-2" {...props}/>,
+                    h2: ({node, ...props}) => <h2 className="border-b border-zinc-800 pb-2" {...props}/>,
+                    ul: ({node, ...props}) => <ul className="list-disc list-inside space-y-2" {...props}/>,
+                    ol: ({node, ...props}) => <ol className="list-decimal list-inside space-y-2" {...props}/>,
+                    li: ({node, ...props}) => (
+                      <li className="pl-2" {...props}/>
+                    ),
+                    blockquote: ({node, ...props}) => (
+                      <blockquote className="border-l-4 border-zinc-700 pl-4 italic text-zinc-400" {...props}/>
+                    ),
+                  }}
+                >
+                  {strategy}
+                </ReactMarkdown>
               </div>
             ) : (
               <div className="text-zinc-500 text-center mt-20">

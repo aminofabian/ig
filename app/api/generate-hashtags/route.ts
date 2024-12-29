@@ -8,11 +8,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Input is required' }, { status: 400 });
     }
 
-    const response = await fetch('https://open-ai21.p.rapidapi.com/claude3', {
+    const response = await fetch('open-ai21.p.rapidapi.com/claude3', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-rapidapi-host': 'claude-3-5-sonnet.p.rapidapi.com',
+        'x-rapidapi-host': 'https://open-ai21.p.rapidapi.com/claude3',
         'x-rapidapi-key': '175e40e8a2msh1b0a7544f3a19c0p16a088jsn14d59f4ca80a'
       },
       body: JSON.stringify({

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Loader2, Upload, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { generateHashtagsAction } from '../actions/generate-hashtags';
 
 export default function HashtagGenerator() {
   const [loading, setLoading] = useState(false);
@@ -36,30 +37,19 @@ export default function HashtagGenerator() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/generate-hashtags", {
-        method: "POST",
-        body: JSON.stringify({
-          input: `Generate Instagram hashtags for a business with the following details:
-            Business Name: ${businessName}
-            Business Description: ${businessDescription}
-            Target Audience: ${targetAudience}
-            ${image ? 'An image will be used with these hashtags.' : ''}`
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const result = await generateHashtagsAction(`Generate Instagram hashtags for a business with the following details:
+        Business Name: ${businessName}
+        Business Description: ${businessDescription}
+        Target Audience: ${targetAudience}
+        ${image ? 'An image will be used with these hashtags.' : ''}`);
 
-      if (!response.ok) {
-        throw new Error('Failed to generate hashtags');
+      console.log('Generated hashtags result:', result); // Debug log
+      
+      if (!result || !result.hashtags) {
+        throw new Error('No hashtags received');
       }
 
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      setHashtags(data.hashtags);
+      setHashtags(result.hashtags);
       toast.success("Hashtags generated successfully!");
     } catch (error) {
       console.error('Error:', error);
