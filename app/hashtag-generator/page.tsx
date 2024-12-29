@@ -59,7 +59,6 @@ export default function HashtagGenerator() {
         throw new Error(data.error);
       }
 
-      console.log('Received hashtags:', data.hashtags); // Debug log
       setHashtags(data.hashtags);
       toast.success("Hashtags generated successfully!");
     } catch (error) {
