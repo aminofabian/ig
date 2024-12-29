@@ -51,13 +51,13 @@ export default function InstagramConnect({ onUserData }: InstagramConnectProps) 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter Instagram username"
-            className="flex-1 px-4 py-2 border rounded"
+            className="flex-1 px-4 py-2 border rounded bg-[#f059da]/15 text-white"
             required
           />
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+            className="px-4 py-2 bg-[#f059da] text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
           >
             {loading ? 'Connecting...' : 'Connect'}
           </button>
@@ -71,7 +71,7 @@ export default function InstagramConnect({ onUserData }: InstagramConnectProps) 
       )}
 
       {userData && (
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-[#f059da]/15 text-white p-6 rounded-lg shadow">
           <h2 className="text-2xl font-bold mb-4">{userData.username}</h2>
           {userData.full_name && (
             <p className="mb-2">

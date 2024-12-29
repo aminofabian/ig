@@ -37,7 +37,7 @@ export default function UserProfile({ user }: { user?: InstagramUserData }) {
   return (
     <div className="space-y-6">
       {/* Profile Header Card */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
         <div className="flex items-center gap-6">
           <img 
             src={getProxiedImageUrl(user.profile_pic_url)} 
@@ -48,12 +48,12 @@ export default function UserProfile({ user }: { user?: InstagramUserData }) {
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold">{user.username}</h2>
               {user.is_verified && (
-                <span className="text-blue-500 text-xl">✓</span>
+                <span className="text-white text-xl">✓</span>
               )}
             </div>
-            <p className="text-gray-600 text-lg">{user.full_name}</p>
+            <p className="text-gray-60 text-lg bg-[#f059da]/15 p-2 rounded-lg">{user.full_name}</p>
             {user.is_private && (
-              <span className="inline-block mt-1 px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">Private Account</span>
+              <span className="inline-block mt-1 px-2 py-1 bg-gray-100 text-sm rounded-full bg-[#f059da]/15 border border-[#f059da] px-5 text-white">Private Account</span>
             )}
           </div>
         </div>
@@ -61,46 +61,46 @@ export default function UserProfile({ user }: { user?: InstagramUserData }) {
 
       {/* Stats Card */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-800">
+            <div className="text-2xl font-bold text-gray-80">
               {user.edge_owner_to_timeline_media?.count.toLocaleString()}
             </div>
-            <div className="text-gray-600">Posts</div>
+            <div className="text-gray-60">Posts</div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-800">
+            <div className="text-2xl font-bold text-gray-50">
               {user.edge_followed_by?.count.toLocaleString()}
             </div>
-            <div className="text-gray-600">Followers</div>
+            <div className="text-gray-50">Followers</div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-800">
+            <div className="text-2xl font-bold text-gray-80">
               {user.edge_follow?.count.toLocaleString()}
             </div>
-            <div className="text-gray-600">Following</div>
+            <div className="text-gray-60">Following</div>
           </div>
         </div>
       </div>
 
       {/* Bio Card */}
       {user.biography && (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-2">Biography</h3>
           <p className="text-gray-700 whitespace-pre-wrap">{user.biography}</p>
         </div>
       )}
 
       {/* Save Button */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#f059da]/15 text-white rounded-lg shadow-md p-6">
         {!showConfirm ? (
           <button
             onClick={() => setShowConfirm(true)}
-            className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-500 hover:bg-blue-600"
+            className="w-full py-2 px-4 rounded-md text-white font-medium bg-[#f059da] hover:bg-blue-600"
           >
             Connect This Instagram Profile
           </button>

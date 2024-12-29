@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import { Search, Loader2, Hash, Heart, MessageCircle, BookmarkPlus } from 'lucide-react';
 
 interface HashtagData {
@@ -230,308 +230,324 @@ export default function HashtagSearch() {
   const { avgLikes, avgComments } = calculateAverages();
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-col space-y-4">
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Enter hashtag to search..."
-            onKeyPress={handleKeyPress}
-            className="flex-1 p-2 border border-white/10 rounded-lg bg-black/50 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#f059da]/50"
-          />
-          <button
-            onClick={() => searchHashtag(searchTerm)}
-            disabled={loading || !searchTerm.trim()}
-            className="flex items-center gap-2 px-6 py-2 bg-[#ee46c7] text-white rounded-lg hover:bg-[#f059da] disabled:opacity-50 disabled:hover:bg-[#ee46c7] transition-colors duration-200 md:w-auto w-12"
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 text-white animate-spin" />
-            ) : (
-              <Search className="w-5 h-5 text-white" />
-            )}
-            <span className="md:inline hidden">
-              {loading ? 'Searching...' : 'Search'}
-            </span>
-          </button>
-        </div>
-
-        {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
+    <>
+      <Toaster
+        theme="dark"
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: 'white',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          },
+          className: '',
+        }}
+      />
+      <div className="container mx-auto p-4">
+        <div className="flex flex-col space-y-4">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Enter hashtag to search..."
+              onKeyPress={handleKeyPress}
+              className="flex-1 p-2 border border-white/10 rounded-lg bg-black/50 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#f059da]/50"
+            />
+            <button
+              onClick={() => searchHashtag(searchTerm)}
+              disabled={loading || !searchTerm.trim()}
+              className="flex items-center gap-2 px-6 py-2 bg-[#ee46c7] text-white rounded-lg hover:bg-[#f059da] disabled:opacity-50 disabled:hover:bg-[#ee46c7] transition-colors duration-200 md:w-auto w-12"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+              ) : (
+                <Search className="w-5 h-5 text-white" />
+              )}
+              <span className="md:inline hidden">
+                {loading ? 'Searching...' : 'Search'}
+              </span>
+            </button>
           </div>
-        )}
 
-        {loading && (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-2 text-gray-500">Searching hashtags...</p>
-          </div>
-        )}
+          {error && (
+            <div className="mb-8 p-4 bg-black/30 border border-red-500/50 rounded-lg text-red-400">
+              {error}
+            </div>
+          )}
 
-        {hashtagData && (
-          <div className="space-y-8">
-            {/* Hashtag Overview */}
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-white/10">
-              <div className="flex items-center gap-6 mb-6">
-                {hashtagData.items?.[0]?.user?.profile_pic_url && (
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-blue-100">
-                    <img
-                      src={getProxiedImageUrl(hashtagData.items[0].user.profile_pic_url)}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+          {loading && (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f059da] mx-auto"></div>
+              <p className="mt-2 text-gray-400">Searching hashtags...</p>
+            </div>
+          )}
+
+          {hashtagData && (
+            <div className="space-y-8">
+              {/* Hashtag Overview */}
+              <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-white/10">
+                <div className="flex items-center gap-6 mb-6">
+                  {hashtagData.items?.[0]?.user?.profile_pic_url && (
+                    <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-blue-100">
+                      <img
+                        src={getProxiedImageUrl(hashtagData.items[0].user.profile_pic_url)}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <h2 className="text-3xl font-bold text-gray-800 mb-1">
+                        #{hashtagData.additional_data?.name || searchQuery}
+                      </h2>
+                      {hashtagData.additional_data?.formatted_media_count && (
+                        <p className="text-lg text-blue-600 font-semibold">
+                          {hashtagData.additional_data.formatted_media_count} posts
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={saveHashtag}
+                      disabled={isSaving}
+                      className="flex items-center gap-2 px-4 py-2 bg-[#ee46c7] text-white rounded-lg hover:bg-[#f059da] disabled:opacity-50 disabled:hover:bg-[#ee46c7] transition-colors duration-200"
+                    >
+                      {isSaving ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <BookmarkPlus className="w-5 h-5" />
+                      )}
+                      <span>{isSaving ? 'Saving...' : 'Save'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+                  <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
+                      <Hash className="w-5 h-5 text-[#f059da]" />
+                    </div>
+                    <div className="flex sm:flex-col sm:items-center gap-2">
+                      <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Total Posts</h3>
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                        {formatCount(hashtagData.additional_data?.media_count || 0)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
+                      <Heart className="w-5 h-5 text-[#f059da]" />
+                    </div>
+                    <div className="flex sm:flex-col sm:items-center gap-2">
+                      <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Average Likes</h3>
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                        {formatCount(avgLikes)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3 sm:col-span-2 md:col-span-1">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
+                      <MessageCircle className="w-5 h-5 text-[#f059da]" />
+                    </div>
+                    <div className="flex sm:flex-col sm:items-center gap-2">
+                      <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Average Comments</h3>
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                        {formatCount(avgComments)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Posts Grid */}
+              <div className="rounded-lg shadow-lg p-6 bg-black/20 backdrop-blur-sm border border-white/10">
+                <h2 className="text-2xl font-bold mb-6 text-white">Recent Posts</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+                  {getCurrentPagePosts().map((item) => (
+                    <div key={item.id} className="bg-black/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-white/10">
+                      <div className="relative pb-[100%]">
+                        {item.thumbnail_url && (
+                          <img
+                            src={getProxiedImageUrl(item.thumbnail_url)}
+                            alt={item.caption_text || 'Instagram post'}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
+                        {item.video_url && (
+                          <video
+                            src={item.video_url}
+                            poster={item.thumbnail_url ? getProxiedImageUrl(item.thumbnail_url) : undefined}
+                            controls
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          {item.user && (
+                            <div className="flex items-center gap-3">
+                              {item.user.profile_pic_url && (
+                                <img
+                                  src={getProxiedImageUrl(item.user.profile_pic_url)}
+                                  alt={item.user.username || 'User'}
+                                  className="w-10 h-10 rounded-full"
+                                />
+                              )}
+                              <span className="font-medium text-white">{item.user.username}</span>
+                            </div>
+                          )}
+                          {item.taken_at && (
+                            <span className="text-sm text-gray-400 hidden md:block">{formatDate(item.taken_at)}</span>
+                          )}
+                        </div>
+
+                        {/* Caption and Hashtags */}
+                        {item.caption_text && (
+                          <div className="space-y-3">
+                            <p className="text-sm text-gray-300">
+                              {formatCaption(item.caption_text)}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {extractHashtags(item.caption_text).map((hashtag, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    const tag = hashtag.slice(1);
+                                    setSearchTerm(tag);
+                                    searchHashtag(tag);
+                                  }}
+                                  className="text-xs bg-[#f059da]/10 text-[#f059da] px-3 py-1 rounded-full hover:bg-[#f059da]/20 transition-colors"
+                                >
+                                  {hashtag}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Engagement Stats */}
+                        <div className="flex justify-between text-sm text-gray-400 pt-2 border-t border-white/10">
+                          <div className="flex items-center">
+                            <svg className="w-5 h-5 text-red-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                            </svg>
+                            {formatCount(item.like_count || 0)}
+                          </div>
+                          <div className="flex items-center">
+                            <svg className="w-5 h-5 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" />
+                            </svg>
+                            {formatCount(item.comment_count || 0)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8 flex justify-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
+                    >
+                      Previous
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-4 py-2 rounded-lg ${
+                          currentPage === pageNum
+                            ? 'bg-[#f059da] text-white'
+                            : 'bg-black/30 text-white hover:bg-black/40 border border-white/10'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
+                    >
+                      Next
+                    </button>
                   </div>
                 )}
-                <div className="flex items-center gap-4">
-                  <div>
-                    <h2 className="text-3xl font-bold text-gray-800 mb-1">
-                      #{hashtagData.additional_data?.name || searchQuery}
-                    </h2>
-                    {hashtagData.additional_data?.formatted_media_count && (
-                      <p className="text-lg text-blue-600 font-semibold">
-                        {hashtagData.additional_data.formatted_media_count} posts
-                      </p>
-                    )}
-                  </div>
-                  <button
-                    onClick={saveHashtag}
-                    disabled={isSaving}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#ee46c7] text-white rounded-lg hover:bg-[#f059da] disabled:opacity-50 disabled:hover:bg-[#ee46c7] transition-colors duration-200"
-                  >
-                    {isSaving ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <BookmarkPlus className="w-5 h-5" />
-                    )}
-                    <span>{isSaving ? 'Saving...' : 'Save'}</span>
-                  </button>
-                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-                <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
-                    <Hash className="w-5 h-5 text-[#f059da]" />
+              {/* Insights Section */}
+              <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 border border-white/10">
+                <h2 className="text-2xl font-bold mb-4 text-white">How to Use This Data</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[#f059da]">Engagement Insights</h3>
+                    <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                      <li>
+                        <strong>Average Likes ({formatCount(avgLikes)}):</strong> Posts with likes above this number are performing well for this hashtag
+                      </li>
+                      <li>
+                        <strong>Average Comments ({formatCount(avgComments)}):</strong> Higher comment counts often indicate more engaging content
+                      </li>
+                      <li>
+                        <strong>Post Timing:</strong> Note the posting times of high-performing content to optimize your posting schedule
+                      </li>
+                    </ul>
                   </div>
-                  <div className="flex sm:flex-col sm:items-center gap-2">
-                    <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Total Posts</h3>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-                      {formatCount(hashtagData.additional_data?.media_count || 0)}
-                    </p>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[#f059da]">Content Strategy</h3>
+                    <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                      <li>
+                        <strong>Related Hashtags:</strong> Click on hashtags in posts to discover related communities and expand your reach
+                      </li>
+                      <li>
+                        <strong>Content Type:</strong> Look for patterns in successful posts (images vs. videos, caption length, etc.)
+                      </li>
+                      <li>
+                        <strong>Total Posts ({formatCount(hashtagData.additional_data?.media_count || 0)}):</strong> Higher numbers indicate more active hashtags, but also more competition
+                      </li>
+                    </ul>
                   </div>
-                </div>
-                <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
-                    <Heart className="w-5 h-5 text-[#f059da]" />
-                  </div>
-                  <div className="flex sm:flex-col sm:items-center gap-2">
-                    <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Average Likes</h3>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-                      {formatCount(avgLikes)}
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-black/20 p-3 md:p-4 rounded-lg flex items-center sm:flex-col sm:items-center gap-3 sm:col-span-2 md:col-span-1">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f059da]/10">
-                    <MessageCircle className="w-5 h-5 text-[#f059da]" />
-                  </div>
-                  <div className="flex sm:flex-col sm:items-center gap-2">
-                    <h3 className="text-base md:text-lg font-semibold text-white/70 hidden sm:block sm:mb-2">Average Comments</h3>
-                    <p className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-                      {formatCount(avgComments)}
-                    </p>
+
+                  <div className="md:col-span-2 bg-black/30 p-4 rounded-lg border border-white/10">
+                    <h3 className="text-lg font-semibold text-[#f059da] mb-2">Pro Tips</h3>
+                    <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                      <li>
+                        Mix popular hashtags ({hashtagData.additional_data?.media_count || 0 > 500000 ? 'like this one' : 'larger than this'}) with niche ones for better visibility
+                      </li>
+                      <li>
+                        Analyze captions of high-performing posts to understand what messaging resonates with this audience
+                      </li>
+                      <li>
+                        Save posts with {avgLikes * 1.5}+ likes as references for content that works well in this niche
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
+          )}
 
-            {/* Posts Grid */}
-            <div className="rounded-lg shadow-lg p-6 bg-black/20 backdrop-blur-sm border border-white/10">
-              <h2 className="text-2xl font-bold mb-6 text-white">Recent Posts</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-                {getCurrentPagePosts().map((item) => (
-                  <div key={item.id} className="bg-black/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-white/10">
-                    <div className="relative pb-[100%]">
-                      {item.thumbnail_url && (
-                        <img
-                          src={getProxiedImageUrl(item.thumbnail_url)}
-                          alt={item.caption_text || 'Instagram post'}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      )}
-                      {item.video_url && (
-                        <video
-                          src={item.video_url}
-                          poster={item.thumbnail_url ? getProxiedImageUrl(item.thumbnail_url) : undefined}
-                          controls
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      )}
-                    </div>
-                    <div className="p-4 space-y-4">
-                      <div className="flex items-center justify-between">
-                        {item.user && (
-                          <div className="flex items-center gap-3">
-                            {item.user.profile_pic_url && (
-                              <img
-                                src={getProxiedImageUrl(item.user.profile_pic_url)}
-                                alt={item.user.username || 'User'}
-                                className="w-10 h-10 rounded-full"
-                              />
-                            )}
-                            <span className="font-medium text-white">{item.user.username}</span>
-                          </div>
-                        )}
-                        {item.taken_at && (
-                          <span className="text-sm text-gray-400 hidden md:block">{formatDate(item.taken_at)}</span>
-                        )}
-                      </div>
-
-                      {/* Caption and Hashtags */}
-                      {item.caption_text && (
-                        <div className="space-y-3">
-                          <p className="text-sm text-gray-300">
-                            {formatCaption(item.caption_text)}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {extractHashtags(item.caption_text).map((hashtag, index) => (
-                              <button
-                                key={index}
-                                onClick={() => {
-                                  const tag = hashtag.slice(1);
-                                  setSearchTerm(tag);
-                                  searchHashtag(tag);
-                                }}
-                                className="text-xs bg-[#f059da]/10 text-[#f059da] px-3 py-1 rounded-full hover:bg-[#f059da]/20 transition-colors"
-                              >
-                                {hashtag}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Engagement Stats */}
-                      <div className="flex justify-between text-sm text-gray-400 pt-2 border-t border-white/10">
-                        <div className="flex items-center">
-                          <svg className="w-5 h-5 text-red-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                          </svg>
-                          {formatCount(item.like_count || 0)}
-                        </div>
-                        <div className="flex items-center">
-                          <svg className="w-5 h-5 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" />
-                          </svg>
-                          {formatCount(item.comment_count || 0)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-8 flex justify-center gap-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
-                  >
-                    Previous
-                  </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`px-4 py-2 rounded-lg ${
-                        currentPage === pageNum
-                          ? 'bg-[#f059da] text-white'
-                          : 'bg-black/30 text-white hover:bg-black/40 border border-white/10'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 rounded-lg bg-black/30 text-white hover:bg-black/40 disabled:opacity-50 border border-white/10"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
+          {!searchTerm && !loading && (
+            <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-gray-400 text-lg">Enter a hashtag to start searching</p>
             </div>
+          )}
 
-            {/* Insights Section */}
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 border border-white/10">
-              <h2 className="text-2xl font-bold mb-4 text-white">How to Use This Data</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#f059da]">Engagement Insights</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                    <li>
-                      <strong>Average Likes ({formatCount(avgLikes)}):</strong> Posts with likes above this number are performing well for this hashtag
-                    </li>
-                    <li>
-                      <strong>Average Comments ({formatCount(avgComments)}):</strong> Higher comment counts often indicate more engaging content
-                    </li>
-                    <li>
-                      <strong>Post Timing:</strong> Note the posting times of high-performing content to optimize your posting schedule
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#f059da]">Content Strategy</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                    <li>
-                      <strong>Related Hashtags:</strong> Click on hashtags in posts to discover related communities and expand your reach
-                    </li>
-                    <li>
-                      <strong>Content Type:</strong> Look for patterns in successful posts (images vs. videos, caption length, etc.)
-                    </li>
-                    <li>
-                      <strong>Total Posts ({formatCount(hashtagData.additional_data?.media_count || 0)}):</strong> Higher numbers indicate more active hashtags, but also more competition
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="md:col-span-2 bg-black/30 p-4 rounded-lg border border-white/10">
-                  <h3 className="text-lg font-semibold text-[#f059da] mb-2">Pro Tips</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                    <li>
-                      Mix popular hashtags ({hashtagData.additional_data?.media_count || 0 > 500000 ? 'like this one' : 'larger than this'}) with niche ones for better visibility
-                    </li>
-                    <li>
-                      Analyze captions of high-performing posts to understand what messaging resonates with this audience
-                    </li>
-                    <li>
-                      Save posts with {avgLikes * 1.5}+ likes as references for content that works well in this niche
-                    </li>
-                  </ul>
-                </div>
-              </div>
+          {hashtagData === null && !loading && searchTerm && (
+            <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-gray-400 text-lg">No results found for #{searchTerm}</p>
             </div>
-          </div>
-        )}
-
-        {!searchTerm && !loading && (
-          <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
-            <p className="text-gray-400 text-lg">Enter a hashtag to start searching</p>
-          </div>
-        )}
-
-        {hashtagData === null && !loading && searchTerm && (
-          <div className="text-center py-12 bg-black/20 backdrop-blur-sm rounded-lg border border-white/10">
-            <p className="text-gray-400 text-lg">No results found for #{searchTerm}</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

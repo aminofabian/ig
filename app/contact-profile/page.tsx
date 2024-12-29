@@ -1,4 +1,5 @@
 'use client'
+import AnalyticsCard from "@/components/AnalyticsCard";
 import InstagramConnect from "@/components/instagram-user/InstagramConnect";
 import UserProfile from "@/components/instagram-user/UserProfile";
 import { InstagramUserData } from "@/types/instagram";
@@ -20,6 +21,8 @@ export default function ProfilePage() {
         }} 
       />
       <UserProfile user={userData} />
+
+      <AnalyticsCard />
     </main>
   );
 }

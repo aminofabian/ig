@@ -52,12 +52,12 @@ const routes = {
       href: "/analytics",
       color: "text-[#f059da]",
     },
-    // {
-    //   label: "Find Users",
-    //   icon: User,
-    //   href: "/users",
-    //   color: "text-[#f059da]",
-    // },
+    {
+      label: "Connect Instagram",
+      icon: User,
+      href: "/contact-profile",
+      color: "text-[#f059da]",
+    },
   ],
   settings: [
     {
