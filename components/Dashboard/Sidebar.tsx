@@ -53,6 +53,12 @@ const routes = {
       color: "text-[#f059da]",
     },
     {
+      label: "Lead Generator",
+      icon: User,
+      href: "/leadgenerator",
+      color: "text-[#f059da]",
+    },
+    {
       label: "Connect Instagram",
       icon: User,
       href: "/contact-profile",

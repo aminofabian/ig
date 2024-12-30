@@ -15,6 +15,7 @@ const nextConfig = {
         pathname: '/storage/**',
       },
     ],
+    domains: ['scontent-ams4-1.cdninstagram.com', 'scontent.cdninstagram.com'],
   },
 };
 
