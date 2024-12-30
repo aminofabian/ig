@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import LayoutClient from "@/components/LayoutClient"; // Updated Client Component
+import { MessageProvider } from '@/lib/contexts/MessageContext';
+import { ChatProvider } from '@/lib/contexts/ChatContext';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -29,7 +31,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <SessionProvider>
-            <LayoutClient>{children}</LayoutClient>
+            <MessageProvider>
+              <ChatProvider>
+                <LayoutClient>{children}</LayoutClient>
+              </ChatProvider>
+            </MessageProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>

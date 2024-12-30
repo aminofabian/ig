@@ -27,6 +27,8 @@ import { SubscriptionStatus } from "@/types/admin";
 import { UserRole } from '@prisma/client';
 import { toast, Toaster } from 'sonner';
 import PusherClient from 'pusher-js';
+import MessageListener from "@/components/admin/users/MessageListener";
+import { AdminMessageListener } from "@/components/admin/AdminMessageListener";
 
 
 
@@ -60,8 +62,20 @@ function AdminPage() {
   }, [fetchAllUsers]);
 
   useEffect(() => {
-    if (status === "unauthenticated" || (session?.user && session.user.role !== "ADMIN")) {
-      redirect("/unauthorized");
+    if (status === "loading") return;
+    
+    console.log("Session:", session);
+    console.log("Auth Status:", status);
+    console.log("User Role:", session?.user?.role);
+    
+    if (status === "unauthenticated") {
+      console.log("User is not authenticated");
+      return redirect("/unauthorized");
+    }
+    
+    if (session?.user && session.user.role !== "ADMIN") {
+      console.log("User is authenticated but not admin. Role:", session.user.role);
+      return redirect("/unauthorized");
     }
   }, [session, status]);
 

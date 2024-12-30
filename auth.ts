@@ -69,7 +69,6 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-
       if (!user.email) return false;
       
       // For OAuth providers
@@ -101,7 +100,6 @@ export const {
     },
 
     async session({ token, session }) {
-      
       if (token.sub && session.user) {
         session.user.id = token.sub;
         session.user.name = token.name as string;
@@ -118,7 +116,6 @@ export const {
     },
 
     async jwt({ token, user, account, profile }) {
-      
       if (!token.sub) return token;
 
       const existingUser = await getUserById(token.sub);

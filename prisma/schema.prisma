@@ -41,6 +41,20 @@ enum LISTENERS {
 }
 
 // Core models
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  fromUserId String   // Make sure these field names match
+  toUserId   String
+  createdAt  DateTime @default(now())
+  read       Boolean  @default(false)
+  fromUser   User     @relation("SentMessages", fields: [fromUserId], references: [id])
+  toUser     User     @relation("ReceivedMessages", fields: [toUserId], references: [id])
+
+  @@index([fromUserId])
+  @@index([toUserId])
+}
+
 model User {
   id                 String          @id @default(cuid())
   firstName          String?
@@ -71,6 +85,8 @@ model User {
   hashtagSearches    HashtagSearch[]
   accounts           Account[]
   instagramSnapshots InstagramSnapshot[]
+  sentMessages       Message[]       @relation("SentMessages")
+  receivedMessages   Message[]       @relation("ReceivedMessages")
 
   // Instagram Profile Fields
   instagramProfileId String?   @unique

@@ -5,86 +5,79 @@ import {
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
-  adminRoutes
+  adminRoutes,
+  isAdminEmail,
 } from "@/routes";
+import { NextResponse } from "next/server";
 
-const { auth: middleware } = NextAuth(authConfig);
+const extendedAuthConfig = {
+  ...authConfig,
+  trustProxy: true,
+};
 
-export default middleware((req) => {
+export const { auth } = NextAuth(extendedAuthConfig);
+
+// Helper function to check if a pathname matches any of the routes
+function isPathnameInRoutes(pathname: string, routes: string[]): boolean {
+  return routes.some(route => {
+    // Check for exact match
+    if (route === pathname) return true;
+    
+    // Check for dynamic routes
+    if (route.includes('[postSlug]')) {
+      const routePattern = route.replace('[postSlug]', '([^/]+)');
+      const regex = new RegExp(`^${routePattern}$`);
+      return regex.test(pathname);
+    }
+    
+    return false;
+  });
+}
+
+export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   
-  // Add debug logging
-  console.log("Debug middleware:", {
-    pathname: nextUrl.pathname,
-    isLoggedIn,
-    userRole: req.auth?.user?.role,
-    userEmail: req.auth?.user?.email,
-    isApiAuthRoute: nextUrl.pathname.startsWith(apiAuthPrefix),
-    isPublicRoute: publicRoutes.includes(nextUrl.pathname),
-    isAuthRoute: authRoutes.includes(nextUrl.pathname),
-    isAdminRoute: adminRoutes.some(route => nextUrl.pathname.startsWith(route))
-  });
-
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-  const isAdminRoute = adminRoutes.some(route => 
-    nextUrl.pathname.startsWith(route)
-  );
+  const isPublicRoute = isPathnameInRoutes(nextUrl.pathname, publicRoutes);
+  const isAuthRoute = isPathnameInRoutes(nextUrl.pathname, authRoutes);
+  const isAdminRoute = adminRoutes.some(route => nextUrl.pathname.startsWith(route));
 
-  // Check if it's the Instagram API endpoint
-  const isInstagramApi = nextUrl.pathname.startsWith('/api/instagram');
-  if (isInstagramApi) {
-    return;
-  }
-
-  // Handle API routes
   if (isApiAuthRoute) {
     return;
   }
 
-  // Handle public routes
-  if (isPublicRoute) {
-    return;
-  }
-
-  // Handle auth routes
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin));
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return;
   }
 
-  // Handle admin routes
+  if (!isLoggedIn && !isPublicRoute) {
+    return Response.redirect(new URL("/auth/login", nextUrl));
+  }
+
   if (isAdminRoute) {
     if (!isLoggedIn) {
-      return Response.redirect(new URL("/auth/login", nextUrl.origin));
+      console.log("Admin route - User not logged in");
+      return Response.redirect(new URL("/auth/login", nextUrl));
     }
-
-    const userRole = req.auth?.user?.role;
-    if (userRole !== "ADMIN") {
-      return Response.redirect(new URL("/", nextUrl.origin));
+    const userEmail = req.auth?.user?.email;
+    console.log("Admin route check:", {
+      userEmail,
+      isAdmin: userEmail ? isAdminEmail(userEmail) : false
+    });
+    
+    if (!userEmail || !isAdminEmail(userEmail)) {
+      console.log("Admin route - User not admin:", userEmail);
+      return NextResponse.redirect(new URL("/unauthorized", nextUrl));
     }
-
-    return;
-  }
-
-  // Handle protected routes
-  if (!isLoggedIn) {
-    return Response.redirect(new URL("/auth/login", nextUrl.origin));
   }
 
   return;
 });
 
-// Update the config to ensure it catches all admin routes
 export const config = {
-  matcher: [
-    "/((?!.+\\.[\\w]+$|_next).*)",
-    "/",
-    "/(api|trpc)(.*)",
-    "/reddit-analytics/:path*"  // Add specific admin route patterns
-  ]
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

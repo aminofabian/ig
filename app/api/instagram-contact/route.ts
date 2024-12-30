@@ -45,6 +45,14 @@ export async function GET(request: Request) {
       );
     }
 
+    if (response.status === 429) {
+      console.error('Rate limit exceeded for Instagram API');
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a few minutes.' },
+        { status: 429 }
+      );
+    }
+
     if (!response.ok) {
       throw new Error(`API responded with status: ${response.status}`);
     }

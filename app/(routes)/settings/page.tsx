@@ -48,7 +48,7 @@ export default function SettingsPage() {
     firstName: session?.user?.firstName || '',
     lastName: session?.user?.lastName || '',
     email: session?.user?.email || '',
-    bio: session?.user?.bio || ''
+    bio: session?.user?.bio || '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -53,7 +53,17 @@ export const apiAuthPrefix = "/api/auth";
   */
 export const DEFAULT_LOGIN_REDIRECT = "/";
 
-export const adminRoutes = [
-  "/admin",
-  // Add other admin routes here
+export const adminRoutes = ["/admin"];
+
+export const ADMIN_EMAILS = [
+  "aminofab@gmail.com",
+  "writerfabboy@gmail.com",
+  "zelisline@gmail.com",
+  "aminofabian@gmail.com",
+  "eminselimaslan@gmail.com",
 ];
+
+// Helper function to check admin email
+export const isAdminEmail = (email: string | null | undefined): boolean => {
+  return ADMIN_EMAILS.includes(email?.toLowerCase() ?? "");
+};
