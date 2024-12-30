@@ -71,7 +71,7 @@ export const MessageForm = ({ recipientId }: MessageFormProps) => {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-zinc-800">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-zinc-700">
         <div className="flex gap-2">
           <Textarea
             value={message}
