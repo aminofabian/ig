@@ -77,7 +77,7 @@ export const MessageForm = ({ recipientId }: MessageFormProps) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 bg-zinc-900/50 border-zinc-800 focus:ring-[#f059da]/10"
+            className="flex-1 bg-zinc-900/50 border-zinc-800 focus:ring-[#f059da]/10 text-slate-100"
           />
           <Button
             type="submit"
