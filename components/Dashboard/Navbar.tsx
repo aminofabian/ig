@@ -79,7 +79,7 @@ const Navbar = () => {
             className="hidden md:flex bg-gradient-to-r from-[#f059da] to-[#f059da]/80 hover:to-[#f059da] text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
-            New
+            <a href="/messages">New</a>
           </Button>
           {/* Notifications */}
           <DropdownMenu>
