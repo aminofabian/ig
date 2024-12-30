@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Hash, Users, BarChart2, Settings, LogOut, ArrowRight, MessageCircle, Bot, Clock, Target, Zap, Database, Share } from "lucide-react";
+import { Hash, Users, BarChart2, Settings, LogOut, ArrowRight, MessageCircle, Bot, Clock, Target, Zap, Database, Share, User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
@@ -106,11 +106,11 @@ const HomePage = () => {
     //   stats: "Real-time data"
     // },
     {
-      label: "Settings",
-      icon: Settings,
+      label: "Lead Generator",
+      icon: User2,
       color: "text-[#f059da]",
       bgColor: "bg-[#f059da]/10",
-      href: "/settings",
+      href: "/leadgenerator",
       description: "Customize your experience",
       stats: "Full control"
     }
