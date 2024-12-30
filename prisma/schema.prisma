@@ -376,3 +376,25 @@ model InstagramSnapshot {
   @@index([userId])
   @@map("instagram_snapshots")
 }
+
+model Lead {
+  id              String   @id @default(cuid())
+  username        String   @unique
+  fullName        String?
+  profilePicUrl   String?
+  followers       Int      @default(0)
+  following       Int      @default(0)
+  posts           Int      @default(0)
+  biography       String?
+  website         String?
+  isBusiness      Boolean  @default(false)
+  businessCategory String?
+  engagementRate  Float    @default(0)
+  sourceHashtag   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([sourceHashtag])
+  @@index([followers])
+  @@index([engagementRate])
+}

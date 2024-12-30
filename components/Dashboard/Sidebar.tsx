@@ -53,9 +53,9 @@ const routes = {
       color: "text-[#f059da]",
     },
     {
-      label: "Lead Generator",
+      label: "Generate Leads",
       icon: User,
-      href: "/leadgenerator",
+      href: "/generate-leads",
       color: "text-[#f059da]",
     },
     {
