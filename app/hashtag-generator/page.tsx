@@ -19,6 +19,11 @@ export default function HashtagGenerator() {
   const [targetAudience, setTargetAudience] = useState("");
   const [hashtags, setHashtags] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [location, setLocation] = useState("");
+  const [timeOfDay, setTimeOfDay] = useState("");
+  const [dayOfWeek, setDayOfWeek] = useState("");
+  const [postType, setPostType] = useState("");
+  const [season, setSeason] = useState("");
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,11 +42,27 @@ export default function HashtagGenerator() {
 
     try {
       setLoading(true);
-      const result = await generateHashtagsAction(`Generate Instagram hashtags for a business with the following details:
+      const result = await generateHashtagsAction(`Generate engaging Instagram hashtags for a business with the following details:
         Business Name: ${businessName}
         Business Description: ${businessDescription}
         Target Audience: ${targetAudience}
-        ${image ? 'An image will be used with these hashtags.' : ''}`);
+        Location: ${location}
+        Posting Time: ${timeOfDay}
+        Day of Week: ${dayOfWeek}
+        Post Type: ${postType} // e.g., product showcase, behind-the-scenes, promotion
+        Seasonal Context: ${season} // current season or upcoming holiday
+        
+        Please include a mix of:
+        - 3-5 branded hashtags (including business name variations)
+        - 3-5 local community hashtags (neighborhood, city, region specific)
+        - 3-5 industry-specific hashtags
+        - 2-3 trending hashtags relevant to the business
+        - 2-3 event or seasonal hashtags if applicable
+        
+        Avoid banned or spammy hashtags. Focus on hashtags with engagement between 10K-500K posts for better visibility.
+        ${image ? 'An image will be used with these hashtags. Please include 2-3 relevant visual content hashtags.' : ''}
+        
+        Format the response as a clean list of hashtags, ready to copy and paste.`);
 
       console.log('Generated hashtags result:', result); // Debug log
       
