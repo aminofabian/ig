@@ -17,7 +17,15 @@ interface UserData {
   is_business?: boolean;
   business_category?: string;
   engagement_rate?: number;
-  posts?: Array<{ like_count: number; comment_count: number }>;
+  posts?: Array<{
+    like_count: number;
+    comment_count: number;
+    taken_at?: number;
+    caption?: string;
+    media_type?: number;
+    thumbnail_url?: string;
+    code?: string;
+  }>;
   is_verified?: boolean;
   is_private?: boolean;
   taken_at?: number;
@@ -138,7 +146,11 @@ export default function LeadGeneration() {
           posts: [{
             like_count: item.like_count || 0,
             comment_count: item.comment_count || 0,
-            taken_at: item.taken_at
+            taken_at: item.taken_at,
+            caption: item.caption_text,
+            media_type: item.media_type,
+            thumbnail_url: item.thumbnail_url,
+            code: item.code
           }]
         };
 
@@ -155,8 +167,22 @@ export default function LeadGeneration() {
           existingUser.posts.push({
             like_count: item.like_count || 0,
             comment_count: item.comment_count || 0,
+            taken_at: item.taken_at,
+            caption: item.caption_text,
+            media_type: item.media_type,
+            thumbnail_url: item.thumbnail_url,
+            code: item.code
           });
         } else {
+          user.posts = [{
+            like_count: item.like_count || 0,
+            comment_count: item.comment_count || 0,
+            taken_at: item.taken_at,
+            caption: item.caption_text,
+            media_type: item.media_type,
+            thumbnail_url: item.thumbnail_url,
+            code: item.code
+          }];
           uniqueUsers.set(user.username, user);
         }
       });
@@ -208,26 +234,78 @@ export default function LeadGeneration() {
   };
 
   const exportToCsv = () => {
-    const headers = ['Username', 'Full Name', 'Followers', 'Following', 'Posts', 'Bio', 'Website', 'Business', 'Category', 'Engagement Rate'];
-    const csvData = filteredUsers.map(user => [
-      user.username,
-      user.full_name,
-      user.follower_count,
-      user.following_count,
-      user.media_count,
-      user.biography?.replace(/,/g, ' '),
-      user.website,
-      user.is_business ? 'Yes' : 'No',
-      user.business_category,
-      `${(user.engagement_rate || 0).toFixed(2)}%`
-    ]);
+    const headers = [
+      'Username',
+      'Instagram URL',
+      'Full Name',
+      'Followers',
+      'Following',
+      'Posts Count',
+      'Follower/Following Ratio',
+      'Biography',
+      'Website',
+      'Business Account',
+      'Business Category',
+      'Verified',
+      'Private',
+      'Overall Engagement Rate',
+      'Average Likes',
+      'Average Comments',
+      'Total Likes',
+      'Total Comments',
+      'Latest Post Date',
+      'Latest Post Likes',
+      'Latest Post Comments',
+      'Latest Post Type',
+      'Latest Post Link',
+      'Latest Post Caption'
+    ];
+
+    const csvData = filteredUsers.map(user => {
+      const avgLikes = user.posts?.length 
+        ? Math.round(user.posts.reduce((sum, post) => sum + post.like_count, 0) / user.posts.length)
+        : 0;
+      const avgComments = user.posts?.length 
+        ? Math.round(user.posts.reduce((sum, post) => sum + post.comment_count, 0) / user.posts.length)
+        : 0;
+      const totalLikes = user.posts?.reduce((sum, post) => sum + post.like_count, 0) || 0;
+      const totalComments = user.posts?.reduce((sum, post) => sum + post.comment_count, 0) || 0;
+      const latestPost = user.posts?.[0];
+
+      return [
+        user.username,
+        `https://instagram.com/${user.username}`,
+        user.full_name,
+        user.follower_count,
+        user.following_count,
+        user.media_count,
+        ((user.follower_count || 0) / (user.following_count || 1)).toFixed(2),
+        user.biography?.replace(/,/g, ' ').replace(/\n/g, ' '),
+        user.website,
+        user.is_business ? 'Yes' : 'No',
+        user.business_category,
+        user.is_verified ? 'Yes' : 'No',
+        user.is_private ? 'Yes' : 'No',
+        `${(user.engagement_rate || 0).toFixed(2)}%`,
+        avgLikes,
+        avgComments,
+        totalLikes,
+        totalComments,
+        latestPost ? formatDate(latestPost.taken_at || 0) : '',
+        latestPost?.like_count || 0,
+        latestPost?.comment_count || 0,
+        latestPost?.media_type === 1 ? 'Photo' : latestPost?.media_type === 2 ? 'Video' : 'Carousel',
+        latestPost?.code ? `https://instagram.com/p/${latestPost.code}` : '',
+        latestPost?.caption?.replace(/,/g, ' ').replace(/\n/g, ' ') || ''
+      ];
+    });
 
     const csvContent = [headers, ...csvData].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `leads-${searchTerm}-${new Date().toISOString()}.csv`;
+    a.download = `instagram-leads-${searchTerm}-${new Date().toISOString().slice(0,10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -390,134 +468,246 @@ export default function LeadGeneration() {
             </div>
           </div>
 
-          {/* Users Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((user) => (
-              <div key={user.pk} className="bg-black/30 rounded-lg p-4 border border-white/10">
-                {/* Header with Image and Name */}
-                <div className="flex items-center gap-3 mb-4">
-                  <a
-                    href={`https://instagram.com/${user.username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="relative group"
-                  >
-                    <img
-                      src={getProxiedImageUrl(user.profile_pic_url)}
-                      alt={user.username}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-[#f059da]/30 transition-transform group-hover:scale-105"
-                      onError={(e) => {
-                        e.currentTarget.src = '/default-profile.png';
-                      }}
-                    />
-                  </a>
-                  <div>
-                    <a
-                      href={`https://instagram.com/${user.username}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-white hover:text-[#f059da] transition-colors"
-                    >
-                      {user.username}
-                    </a>
-                    <p className="text-sm text-gray-400">{user.full_name}</p>
-                    {user.is_business && (
-                      <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">
-                        Business Account
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-2 mb-4 text-center">
-                  <div className="bg-black/20 p-2 rounded">
-                    <p className="text-lg font-semibold text-white">{user.follower_count?.toLocaleString()}</p>
-                    <p className="text-xs text-gray-400">Followers</p>
-                  </div>
-                  <div className="bg-black/20 p-2 rounded">
-                    <p className="text-lg font-semibold text-white">{user.following_count?.toLocaleString()}</p>
-                    <p className="text-xs text-gray-400">Following</p>
-                  </div>
-                  <div className="bg-black/20 p-2 rounded">
-                    <p className="text-lg font-semibold text-white">{user.media_count?.toLocaleString()}</p>
-                    <p className="text-xs text-gray-400">Posts</p>
-                  </div>
-                </div>
-
-                {/* Bio and Details */}
-                <div className="space-y-3 text-sm">
-                  {user.biography && (
-                    <div className="bg-black/20 p-3 rounded">
-                      <p className="text-gray-300 whitespace-pre-wrap">{user.biography}</p>
-                    </div>
-                  )}
-
-                  {user.business_category && (
-                    <div className="flex items-center gap-2 text-gray-300">
-                      <span className="font-semibold">Category:</span>
-                      <span>{user.business_category}</span>
-                    </div>
-                  )}
-
-                  {user.website && (
-                    <a
-                      href={user.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-black/20 p-3 rounded text-blue-400 hover:text-blue-300 truncate"
-                    >
-                      🔗 {user.website}
-                    </a>
-                  )}
-
-                  {/* Engagement Metrics */}
-                  <div className="bg-black/20 p-3 rounded space-y-2">
-                    <div className="flex justify-between text-gray-300">
-                      <span>Engagement Rate:</span>
-                      <span className="font-semibold text-[#f059da]">
-                        {(user.engagement_rate || 0).toFixed(2)}%
-                      </span>
-                    </div>
-                    
-                    {user.posts && user.posts.length > 0 && (
-                      <div className="text-xs text-gray-400">
-                        <p>Recent Post Performance:</p>
-                        <div className="mt-1 space-y-1">
-                          {user.posts.map((post, idx) => (
-                            <div key={idx} className="flex justify-between">
-                              <span>Post {idx + 1}:</span>
-                              <span>
-                                ❤️ {post.like_count.toLocaleString()} • 
-                                💬 {post.comment_count.toLocaleString()}
-                              </span>
-                            </div>
-                          ))}
+          {/* Table View */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-black/40 text-left">
+                  <th className="p-4 text-gray-300 font-semibold">Profile</th>
+                  <th className="p-4 text-gray-300 font-semibold">Stats</th>
+                  <th className="p-4 text-gray-300 font-semibold">Engagement</th>
+                  <th className="p-4 text-gray-300 font-semibold">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.pk} className="border-t border-white/10 hover:bg-black/40">
+                    {/* Profile Column */}
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <a
+                          href={`https://instagram.com/${user.username}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="relative group"
+                        >
+                          <img
+                            src={getProxiedImageUrl(user.profile_pic_url)}
+                            alt={user.username}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-[#f059da]/30 transition-transform group-hover:scale-105"
+                            onError={(e) => {
+                              e.currentTarget.src = '/default-profile.png';
+                            }}
+                          />
+                        </a>
+                        <div>
+                          <a
+                            href={`https://instagram.com/${user.username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-white hover:text-[#f059da] transition-colors block"
+                          >
+                            {user.username}
+                          </a>
+                          <p className="text-sm text-gray-400">{user.full_name}</p>
+                          {user.is_business && (
+                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">
+                              Business
+                            </span>
+                          )}
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </td>
 
-                  {/* Additional Metrics */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-black/20 p-2 rounded text-center">
-                      <p className="text-xs text-gray-400">Follower/Following Ratio</p>
-                      <p className="text-sm text-white font-semibold">
-                        {((user.follower_count ?? 0) / (user.following_count || 1)).toFixed(2)}
-                      </p>
-                    </div>
-                    <div className="bg-black/20 p-2 rounded text-center">
-                      <p className="text-xs text-gray-400">Avg. Engagement</p>
-                      <p className="text-sm text-white font-semibold">
-                        {user.posts && user.posts.length > 0
-                          ? (user.posts.reduce((sum, post) => sum + post.like_count + post.comment_count, 0) / user.posts.length).toFixed(0)
-                          : '0'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                    {/* Stats Column */}
+                    <td className="p-4">
+                      <div className="space-y-1">
+                        <p className="text-gray-300">
+                          <span className="font-semibold">{user.follower_count?.toLocaleString()}</span>
+                          <span className="text-gray-500 text-sm"> followers</span>
+                        </p>
+                        <p className="text-gray-300">
+                          <span className="font-semibold">{user.following_count?.toLocaleString()}</span>
+                          <span className="text-gray-500 text-sm"> following</span>
+                        </p>
+                        <p className="text-gray-300">
+                          <span className="font-semibold">{user.media_count?.toLocaleString()}</span>
+                          <span className="text-gray-500 text-sm"> posts</span>
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Engagement Column */}
+                    <td className="p-4">
+                      <div className="space-y-2">
+                        <p className="text-gray-300">
+                          <span className="text-sm text-gray-500">Engagement Rate: </span>
+                          <span className="font-semibold text-[#f059da]">
+                            {(user.engagement_rate || 0).toFixed(2)}%
+                          </span>
+                        </p>
+                        <p className="text-gray-300">
+                          <span className="text-sm text-gray-500">F/F Ratio: </span>
+                          <span className="font-semibold">
+                            {((user.follower_count ?? 0) / (user.following_count || 1)).toFixed(2)}
+                          </span>
+                        </p>
+                        {user.posts && user.posts.length > 0 && (
+                          <div className="text-xs text-gray-400">
+                            <p className="text-gray-500">Latest Post:</p>
+                            <p>
+                              ❤️ {user.posts[0].like_count.toLocaleString()} • 
+                              💬 {user.posts[0].comment_count.toLocaleString()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Details Column */}
+                    <td className="p-4">
+                      <div className="space-y-4">
+                        {/* Bio and Website Section */}
+                        <div className="space-y-2">
+                          {user.biography && (
+                            <p className="text-sm text-gray-300">{user.biography}</p>
+                          )}
+                          {user.website && (
+                            <a
+                              href={user.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-400 hover:text-blue-300 block"
+                            >
+                              🔗 {user.website}
+                            </a>
+                          )}
+                          {user.business_category && (
+                            <p className="text-sm text-gray-400">
+                              Category: {user.business_category}
+                            </p>
+                          )}
+                          {user.is_verified && (
+                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full mr-2">
+                              Verified
+                            </span>
+                          )}
+                          {user.is_private && (
+                            <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">
+                              Private
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Posts Section */}
+                        {user.posts && user.posts.length > 0 && (
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-semibold text-gray-300">
+                              Recent Posts ({user.posts.length})
+                            </h4>
+                            
+                            {/* Summary Stats */}
+                            <div className="bg-black/20 p-2 rounded mb-4">
+                              <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                  <p className="text-gray-400">Avg. Likes: 
+                                    <span className="text-white ml-1">
+                                      {Math.round(user.posts.reduce((sum, post) => sum + post.like_count, 0) / user.posts.length).toLocaleString()}
+                                    </span>
+                                  </p>
+                                  <p className="text-gray-400">Total Likes: 
+                                    <span className="text-white ml-1">
+                                      {user.posts.reduce((sum, post) => sum + post.like_count, 0).toLocaleString()}
+                                    </span>
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-gray-400">Avg. Comments: 
+                                    <span className="text-white ml-1">
+                                      {Math.round(user.posts.reduce((sum, post) => sum + post.comment_count, 0) / user.posts.length).toLocaleString()}
+                                    </span>
+                                  </p>
+                                  <p className="text-gray-400">Total Comments: 
+                                    <span className="text-white ml-1">
+                                      {user.posts.reduce((sum, post) => sum + post.comment_count, 0).toLocaleString()}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Individual Posts */}
+                            <div className="space-y-2">
+                              {user.posts.map((post, idx) => (
+                                <div key={idx} className="bg-black/30 p-2 rounded border border-white/10">
+                                  <div className="flex items-start gap-3">
+                                    {post.thumbnail_url && (
+                                      <img 
+                                        src={getProxiedImageUrl(post.thumbnail_url)}
+                                        alt="Post thumbnail"
+                                        className="w-16 h-16 object-cover rounded"
+                                      />
+                                    )}
+                                    <div className="flex-1">
+                                      <div className="flex justify-between items-center mb-1">
+                                        <span className="text-xs text-gray-400">
+                                          Post {idx + 1} • {formatDate(post.taken_at || 0)}
+                                        </span>
+                                        {post.code && (
+                                          <a
+                                            href={`https://instagram.com/p/${post.code}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-blue-400 hover:text-blue-300"
+                                          >
+                                            View Post ↗
+                                          </a>
+                                        )}
+                                      </div>
+                                      {post.caption && (
+                                        <p className="text-sm text-gray-300 line-clamp-2 mb-2">
+                                          {post.caption}
+                                        </p>
+                                      )}
+                                      <div className="flex gap-4">
+                                        <div className="flex items-center gap-1">
+                                          <span className="text-red-400">❤️</span>
+                                          <span className="text-sm text-gray-300">
+                                            {post.like_count.toLocaleString()}
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <span className="text-blue-400">💬</span>
+                                          <span className="text-sm text-gray-300">
+                                            {post.comment_count.toLocaleString()}
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <span className="text-purple-400">📊</span>
+                                          <span className="text-sm text-gray-300">
+                                            {(((post.like_count + post.comment_count) / (user.follower_count || 1)) * 100).toFixed(2)}%
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <span className="text-green-400">📈</span>
+                                          <span className="text-sm text-gray-300">
+                                            {post.media_type === 1 ? 'Photo' : post.media_type === 2 ? 'Video' : 'Carousel'}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
