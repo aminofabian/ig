@@ -21,8 +21,12 @@ import {
   FormField,
   FormMessage,
 } from "../ui/form";
+import { useRouter } from "next/navigation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { signIn } from "next-auth/react";
 
-const LoginForm = () => {
+export const LoginForm = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const urLError =
     searchParams.get("error") === "OAuthAccountNotLinked"
@@ -41,25 +45,29 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
+    
+    try {
+      const response = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
 
-    startTransition(() => {
-      login(values)
-        .then((data) => {
-          if (data?.error) {
-            form.reset();
-            setError(data?.error);
-          }
+      if (response?.error) {
+        setError(response.error);
+        form.reset();
+      }
 
-          if (data?.success) {
-            form.reset();
-            setSuccess(data?.success);
-          }
-        })
-        .catch(() => setError("Something went wrong"));
-    });
+      if (response?.ok) {
+        // Force a hard reload to ensure all states are fresh
+        window.location.href = DEFAULT_LOGIN_REDIRECT;
+      }
+    } catch (error) {
+      setError("Something went wrong");
+    }
   };
 
   return (
