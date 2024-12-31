@@ -139,14 +139,26 @@ const HomePage = () => {
           <div className="flex items-center justify-between mb-4 sm:mb-8">
             <div className="flex items-center gap-x-2 sm:gap-x-3">
               {session && (
-                <Button
-                  onClick={handleLogout}
-                  variant="ghost"
-                  className="text-white/70 hover:text-white group relative px-2 sm:px-4"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
+                <>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    className="text-white/70 hover:text-white group relative px-2 sm:px-4"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                  {session.user?.role === 'ADMIN' && (
+                    <Button
+                      onClick={() => router.push('/admin')}
+                      variant="ghost"
+                      className="text-[#f059da] hover:text-[#f059da]/80 group relative px-2 sm:px-4"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      Admin Panel
+                    </Button>
+                  )}
+                </>
               )}
               <div className="flex flex-col min-w-0">
                 <span className="text-base sm:text-lg font-semibold text-white/90 truncate">
