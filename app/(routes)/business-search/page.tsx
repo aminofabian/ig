@@ -133,7 +133,7 @@ export default function BusinessSearchPage() {
               placeholder="Search businesses (e.g., Hotels in San Francisco)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-background border-input pl-10 text-slate-700"
+              className="border-input pl-10 text-slate-100 bg-[#f059da]/10"
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 w-4 h-4" />
