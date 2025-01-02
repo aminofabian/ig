@@ -1,4 +1,4 @@
-import { getProfileByUsername, ProfileData } from "@/app/actions/profile";
+import { getProfileByUsername, ProfileData, getPublicProfile } from "@/app/actions/profile";
 import { getCurrentUser } from "@/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Metadata } from "next";
@@ -44,7 +44,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   try {
-    const profile = await getProfileByUsername(params.username);
+    const profile = await getPublicProfile(params.username);
 
     if (!profile) {
       console.log('Profile not found for username:', params.username);

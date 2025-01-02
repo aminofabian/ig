@@ -164,3 +164,38 @@ export async function updateProfile(data: ProfileUpdateInput): Promise<ProfileDa
 
   return updatedUser;
 }
+
+export async function getPublicProfile(username: string): Promise<Partial<ProfileData> | null> {
+  try {
+    const profile = await db.user.findFirst({
+      where: {
+        OR: [
+          { username },
+          { email: username }
+        ]
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        username: true,
+        bio: true,
+        location: true,
+        website: true,
+        image: true,
+        instagram: true,
+        twitter: true,
+        linkedin: true,
+        github: true,
+        youtube: true,
+        facebook: true,
+        discord: true,
+        tiktok: true,
+      }
+    });
+
+    return profile;
+  } catch (error) {
+    console.error('Error in getPublicProfile:', error);
+    return null;
+  }
+}
