@@ -88,14 +88,23 @@ const HomePage = () => {
       stats: "Precision tools"
     },
     {
-      label: "Image Generator",
+      label: "Business Search",
       icon: BarChart2,
       color: "text-[#f059da]",
       bgColor: "bg-[#f059da]/10",
-      href: "/image-generator",
-      description: "Generate AI-powered images for your posts",
-      stats: "AI-powered"
+      href: "/business-search",
+      description: "Find businesses in your area",
+      stats: "Local business search"
     },
+    // {
+    //   label: "Image Generator",
+    //   icon: BarChart2,
+    //   color: "text-[#f059da]",
+    //   bgColor: "bg-[#f059da]/10",
+    //   href: "/image-generator",
+    //   description: "Generate AI-powered images for your posts",
+    //   stats: "AI-powered"
+    // },
     // {
     //   label: "Analytics",
     //   icon: BarChart2,

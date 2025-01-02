@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2, Download, Save, Share2 } from 'lucide-react';
+import { toast } from "sonner";
 
 const MAX_CHARS = 1000;
 
@@ -13,6 +14,7 @@ const ImageGenerator = () => {
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= MAX_CHARS) {
@@ -61,16 +63,51 @@ const ImageGenerator = () => {
 
   const downloadImage = () => {
     if (image) {
-      const a = document.createElement('a');
-      a.href = image;
-      a.download = 'generated_image.png';
-      a.click();
+      fetch(image)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'generated_image.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('Error downloading image:', error);
+          setError('Failed to download image');
+        });
     }
   };
 
-  const saveImage = () => {
-    // Implement save logic (e.g., save to user profile or database)
-    alert('Save functionality is not yet implemented.');
+  const saveImage = async () => {
+    if (!image) return;
+
+    setSaving(true);
+    try {
+      const response = await fetch('/api/save-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl: image }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success('Image saved successfully!');
+      } else {
+        throw new Error(data.error || 'Failed to save image');
+      }
+    } catch (error) {
+      console.error('Error saving image:', error);
+      toast.error('Failed to save image');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const shareImage = () => {
@@ -130,9 +167,13 @@ const ImageGenerator = () => {
                 <Download className="mr-2" />
                 Download
               </Button>
-              <Button onClick={saveImage}>
-                <Save className="mr-2" />
-                Save
+              <Button onClick={saveImage} disabled={saving}>
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Save className="mr-2" />
+                )}
+                {saving ? 'Saving...' : 'Save'}
               </Button>
               <Button onClick={shareImage}>
                 <Share2 className="mr-2" />
