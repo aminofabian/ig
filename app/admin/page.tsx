@@ -344,12 +344,12 @@ function AdminPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-2 bg-black/40 hover:bg-black/60 rounded-lg flex items-center gap-2 text-sm text-white/90 hover:text-white transition-all border border-white/20">
+                <button className="px-4 py-2 bg-black/40 hidden hover:bg-black/60 rounded-lg flex items-center gap-2 text-sm text-white/90 hover:text-white transition-all border border-white/20">
                   <Download className="h-4 w-4" />
                   Export Data
                 </button>
-                <button className="px-4 py-2 bg-[#f059da]/10 hover:bg-[#f059da]/20 rounded-lg flex items-center gap-2 text-sm text-[#f059da] transition-all border border-[#f059da]/20">
-                  <Upload className="h-4 w-4" />
+                <button className="px-4 py-2 bg-[#f059da]/10 hidden hover:bg-[#f059da]/20 rounded-lg flex items-center gap-2 text-sm text-[#f059da] transition-all border border-[#f059da]/20">
+                  <Upload className="h-4 w-4 hidden" />
                   Import Data
                 </button>
               </div>
