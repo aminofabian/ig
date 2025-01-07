@@ -26,6 +26,7 @@ import { logout } from "@/actions/logout";
 import { useRouter } from "next/navigation";
 import { useNotifications } from "@/lib/stores/useNotifications";
 import { useMessages } from "@/lib/stores/useMessages";
+import Link from "next/link";
 
 const Navbar = () => {
   const router = useRouter();
@@ -201,7 +202,9 @@ const Navbar = () => {
           </DropdownMenu>
           {/* Settings */}
           <Button variant="ghost" size="icon">
+            <Link href="/settings">            
             <Settings className="h-5 w-5 text-zinc-400" />
+            </Link>
           </Button>
           {/* User Menu */}
           <DropdownMenu>

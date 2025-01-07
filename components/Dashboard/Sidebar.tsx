@@ -88,7 +88,7 @@ const Sidebar = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
       
       <div className="px-3 py-2 flex-1 relative z-10">
-        <Link href="/dashboard" className="flex items-center pl-3 mb-14 group">
+        <Link href="/" className="flex items-center pl-3 mb-14 group">
           <div className="relative w-10 h-10 mr-3 transform group-hover:scale-110 transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-[#f059da]/20 to-[#f059da]/5 rounded-xl blur-md group-hover:blur-lg transition-all duration-300" />
             <Image
