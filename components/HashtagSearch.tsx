@@ -301,7 +301,7 @@ export default function HashtagSearch() {
                   )}
                   <div className="flex items-center gap-4">
                     <div>
-                      <h2 className="text-3xl font-bold text-gray-800 mb-1">
+                      <h2 className="text-3xl font-bold text-gray-800 mb-1 text-slate-50">
                         #{hashtagData.additional_data?.name || searchQuery}
                       </h2>
                       {hashtagData.additional_data?.formatted_media_count && (
