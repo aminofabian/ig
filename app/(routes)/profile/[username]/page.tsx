@@ -253,6 +253,18 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             )}
           </div>
 
+          {!currentUser && (
+            <div className="mt-8 mb-4 mx-auto max-w-sm">
+              <a 
+                href="/signup"
+                className="block text-center p-4 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300"
+              >
+                <p className="text-purple-300 font-medium mb-1">✨ Create your own link page</p>
+                <p className="text-xs text-gray-400">Join {profile.firstName} and thousands of others</p>
+              </a>
+            </div>
+          )}
+
           {/* Share Button */}
           <div className="pt-6 text-center">
             <ShareButton title={params.username} />
@@ -260,7 +272,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
           {/* Sign Up CTA - Only show if not logged in */}
           {!currentUser && (
-            <div className="mt-16 text-center bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-white/10">
+            <div className="mt-16 text-center bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-white/20">
               <h2 className="text-2xl font-bold mb-4">Create Your Own Link Page</h2>
               <p className="text-gray-300 mb-6">
                 Join thousands of creators and professionals who use our platform to share their online presence. Create your personalized link page in minutes.
