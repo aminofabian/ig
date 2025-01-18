@@ -3,9 +3,10 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
-import LayoutClient from "@/components/LayoutClient"; // Updated Client Component
+import LayoutClient from "@/components/LayoutClient";
 import { MessageProvider } from '@/lib/contexts/MessageContext';
 import { ChatProvider } from '@/lib/contexts/ChatContext';
+import ClientLayout from '@/components/ClientLayout';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -33,7 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SessionProvider>
             <MessageProvider>
               <ChatProvider>
-                <LayoutClient>{children}</LayoutClient>
+                <ClientLayout>
+                  <LayoutClient>{children}</LayoutClient>
+                </ClientLayout>
               </ChatProvider>
             </MessageProvider>
           </SessionProvider>

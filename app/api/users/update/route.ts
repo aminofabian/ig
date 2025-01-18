@@ -24,19 +24,19 @@ export async function PATCH(req: Request) {
 
     // First find or create subscription
     let subscription = await db.subscription.findUnique({
-      where: { userId }
+      where: { id: userId }
     });
 
     if (subscriptionStatus) {
       if (subscription) {
         await db.subscription.update({
-          where: { userId },
+          where: { id: userId },
           data: { status: subscriptionStatus }
         });
       } else {
         await db.subscription.create({
           data: {
-            userId,
+            id: userId,
             status: subscriptionStatus,
             priceId: 'price_basic',
             currentPeriodStart: new Date(),
