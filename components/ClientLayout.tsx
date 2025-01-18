@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import SubscriptionRequiredModal from '@/components/modals/SubscriptionRequiredModal';
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+function SubscriptionCheck() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,10 +33,16 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     checkSubscription();
   }, [pathname, router]);
 
+  return <SubscriptionRequiredModal isOpen={subscriptionRequired} />;
+}
+
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      <SubscriptionRequiredModal isOpen={subscriptionRequired} />
+      <Suspense fallback={null}>
+        <SubscriptionCheck />
+      </Suspense>
     </>
   );
 } 
