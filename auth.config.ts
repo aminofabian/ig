@@ -7,7 +7,27 @@ import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { UserRole } from "@prisma/client";
 
-export default {
+export const authConfig: NextAuthConfig = {
+  callbacks: {
+    async session({ session, token }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+
+      if (token.role && session.user) {
+        session.user.role = token.role as UserRole;
+      }
+
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+
+      return token;
+    }
+  },
   providers: [
     Github({
       clientId: process.env.GITHUB_ID,

@@ -1,10 +1,11 @@
 // auth.ts
-import NextAuth, { type NextAuthConfig } from "next-auth";
-import authConfig from "@/auth.config";
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
+import { authConfig } from "./auth.config";
 import { getUserById } from "@/data/user";
 import db from "@/lib/db";
 import { UserRole } from "@prisma/client";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Adapter } from "next-auth/adapters";
 
 // List of admin emails
@@ -26,9 +27,13 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  adapter: PrismaAdapter(prisma) as Adapter,
+  session: { strategy: "jwt" },
+  ...authConfig,
   pages: {
     signIn: "/auth/login",
-    error: "/auth/error",
+    signOut: "/auth/login",
+    error: "/auth/login",
   },
   events: {
     async linkAccount({ user, account, profile }) {
@@ -144,7 +149,4 @@ export const {
       return token;
     },
   },
-  adapter: PrismaAdapter(db) as Adapter,
-  session: { strategy: "jwt" },
-  ...authConfig,
 });

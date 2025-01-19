@@ -12,26 +12,33 @@ function SubscriptionCheck() {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      const protectedRoutes = ['/', '/dashboard', '/analytics', '/profile'];
-      const isProtectedRoute = protectedRoutes.some(route => 
-        pathname === route || pathname.startsWith(route + '/')
-      );
+      // Paths that should bypass subscription check
+      const publicPaths = ['/login', '/register', '/auth', '/pricing'];
+      
+      // If current path is public, skip subscription check
+      if (publicPaths.some(path => pathname.startsWith(path))) {
+        return;
+      }
 
-      if (isProtectedRoute && pathname !== '/login') {
+      try {
         const response = await fetch('/api/subscription-check');
+        if (!response.ok) throw new Error('Failed to check subscription');
+        
         const data = await response.json();
 
         if (!data.hasActiveSubscription) {
-          const params = new URLSearchParams();
-          params.set('from', pathname);
-          params.set('subscription_required', 'true');
-          router.push(`/login?${params.toString()}`);
+          // Show modal instead of redirecting
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set('subscription_required', 'true');
+          window.history.replaceState({}, '', currentUrl.toString());
         }
+      } catch (error) {
+        console.error('Subscription check failed:', error);
       }
     };
 
     checkSubscription();
-  }, [pathname, router]);
+  }, [pathname]);
 
   return <SubscriptionRequiredModal isOpen={subscriptionRequired} />;
 }

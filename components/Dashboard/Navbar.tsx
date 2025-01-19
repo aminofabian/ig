@@ -22,22 +22,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/actions/logout";
 import { useRouter } from "next/navigation";
 import { useNotifications } from "@/lib/stores/useNotifications";
-import { useMessages } from "@/lib/stores/useMessages";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
   const router = useRouter();
-  const { notifications, unreadCount, markAsRead, markAllAsRead, getUnreadMessages } = useNotifications();
-  const { messages, markMessageRead } = useMessages();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   const handleLogout = async () => {
     try {
-      await logout();
-      router.refresh(); // Revalidate the page
-      router.push("/auth/logout"); // Redirect to login page
+      await signOut({ 
+        redirect: true,
+        callbackUrl: "/auth/login"
+      });
     } catch (error) {
       console.error("Logout failed:", error);
     }
