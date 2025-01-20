@@ -56,10 +56,6 @@ export const DEFAULT_LOGIN_REDIRECT = "/";
 export const adminRoutes = ["/admin"];
 
 export const ADMIN_EMAILS = [
-  "aminofab@gmail.com",
-  "writerfabboy@gmail.com",
-  "zelisline@gmail.com",
-  "aminofabian@gmail.com",
   "eminselimaslan@gmail.com",
 ];
 
