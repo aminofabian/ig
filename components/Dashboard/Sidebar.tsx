@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Jost } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/actions/logout";
 import { 
   LayoutDashboard,
@@ -18,6 +18,7 @@ import {
   Home,
   LogOut
 } from "lucide-react";
+import { useTransition } from "react";
 
 const font = Jost({
   subsets: ["latin"],
@@ -77,6 +78,19 @@ const routes = {
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleLogout = async () => {
+    startTransition(async () => {
+      try {
+        await logout();
+        router.push("/auth/login"); // Redirect to login page after logout
+      } catch (error) {
+        console.error("Failed to logout:", error);
+      }
+    });
+  };
 
   return (
     <div className="relative space-y-4 py-4 flex flex-col h-full bg-[#0a0a0a] text-white">
@@ -158,20 +172,25 @@ const Sidebar = () => {
       </div>
 
       <div className="px-3 py-2 relative z-10">
-        <form action={logout}>
-          <button
-            type="submit"
-            className="text-sm group flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg transition-all duration-300 relative overflow-hidden
-              hover:bg-gradient-to-r hover:from-[#f059da]/10 hover:to-transparent hover:translate-x-1
-              active:translate-x-0.5 active:scale-[0.99]
-              text-zinc-400 hover:text-zinc-200"
-          >
-            <div className="flex items-center flex-1">
-              <LogOut className="h-5 w-5 mr-3 text-zinc-400 group-hover:text-[#f059da] transition-transform duration-300 group-hover:scale-110" />
-              <span>Logout</span>
-            </div>
-          </button>
-        </form>
+        <button
+          onClick={handleLogout}
+          disabled={isPending}
+          className={cn(
+            "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg transition-all duration-300 relative overflow-hidden",
+            "hover:bg-gradient-to-r hover:from-[#f059da]/10 hover:to-transparent hover:translate-x-1",
+            "active:translate-x-0.5 active:scale-[0.99]",
+            "text-zinc-400 hover:text-zinc-200",
+            isPending && "opacity-50 cursor-not-allowed"
+          )}
+        >
+          <div className="flex items-center flex-1">
+            <LogOut className={cn(
+              "h-5 w-5 mr-3 text-zinc-400 group-hover:text-[#f059da] transition-transform duration-300",
+              !isPending && "group-hover:scale-110"
+            )} />
+            <span>{isPending ? "Logging out..." : "Logout"}</span>
+          </div>
+        </button>
       </div>
     </div>
   );

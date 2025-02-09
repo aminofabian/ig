@@ -3,5 +3,9 @@
 import { signOut } from "@/auth";
 
 export async function logout() {
-  await signOut();
+  try {
+    await signOut();
+  } catch (error) {
+    throw new Error("Failed to sign out");
+  }
 }
