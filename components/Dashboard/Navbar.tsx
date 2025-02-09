@@ -26,20 +26,24 @@ import { useRouter } from "next/navigation";
 import { useNotifications } from "@/lib/stores/useNotifications";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useTransition } from "react";
+import { logout } from "@/actions/logout";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const router = useRouter();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const [isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
-    try {
-      await signOut({ 
-        redirect: true,
-        callbackUrl: "/auth/login"
-      });
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    startTransition(async () => {
+      try {
+        await logout();
+        router.push("/auth/login"); // Redirect to login page after logout
+      } catch (error) {
+        console.error("Failed to logout:", error);
+      }
+    });
   };
 
   // Calculate unread messages count
@@ -213,10 +217,14 @@ const Navbar = () => {
             <DropdownMenuContent align="end" className="w-56 bg-[#0a0a0a] border-zinc-800">
               <DropdownMenuItem 
                 onClick={handleLogout}
-                className="text-zinc-300 focus:bg-[#f059da]/10 focus:text-white cursor-pointer"
+                disabled={isPending}
+                className={cn(
+                  "text-zinc-300 focus:bg-[#f059da]/10 focus:text-white cursor-pointer",
+                  isPending && "opacity-50 cursor-not-allowed"
+                )}
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                {isPending ? "Logging out..." : "Logout"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
