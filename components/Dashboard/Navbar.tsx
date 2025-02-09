@@ -34,16 +34,9 @@ const Navbar = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [isPending, startTransition] = useTransition();
 
-  const handleLogout = () => {
-    startTransition(async () => {
-      try {
-        await signOut({
-          redirect: true,
-          callbackUrl: "/auth/login"
-        });
-      } catch (error) {
-        console.error("Failed to logout:", error);
-      }
+  const handleLogout = async () => {
+    await signOut({
+      callbackUrl: "/auth/login",
     });
   };
 

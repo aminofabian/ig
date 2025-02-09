@@ -18,7 +18,6 @@ import {
   Home,
   LogOut
 } from "lucide-react";
-import { useTransition } from "react";
 
 const font = Jost({
   subsets: ["latin"],
@@ -79,18 +78,10 @@ const routes = {
 const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
-  const handleLogout = () => {
-    startTransition(async () => {
-      try {
-        await signOut({
-          redirect: true,
-          callbackUrl: "/auth/login"
-        });
-      } catch (error) {
-        console.error("Failed to logout:", error);
-      }
+  const handleLogout = async () => {
+    await signOut({
+      callbackUrl: "/auth/login",
     });
   };
 
@@ -176,21 +167,19 @@ const Sidebar = () => {
       <div className="px-3 py-2 relative z-10">
         <button
           onClick={handleLogout}
-          disabled={isPending}
           className={cn(
             "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer rounded-lg transition-all duration-300 relative overflow-hidden",
             "hover:bg-gradient-to-r hover:from-[#f059da]/10 hover:to-transparent hover:translate-x-1",
             "active:translate-x-0.5 active:scale-[0.99]",
-            "text-zinc-400 hover:text-zinc-200",
-            isPending && "opacity-50 cursor-not-allowed"
+            "text-zinc-400 hover:text-zinc-200"
           )}
         >
           <div className="flex items-center flex-1">
             <LogOut className={cn(
               "h-5 w-5 mr-3 text-zinc-400 group-hover:text-[#f059da] transition-transform duration-300",
-              !isPending && "group-hover:scale-110"
+              "group-hover:scale-110"
             )} />
-            <span>{isPending ? "Logging out..." : "Logout"}</span>
+            <span>Logout</span>
           </div>
         </button>
       </div>
