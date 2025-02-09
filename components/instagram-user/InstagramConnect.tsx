@@ -124,7 +124,7 @@ export default function InstagramConnect({ onUserData }: InstagramConnectProps) 
                   <div className="flex items-center gap-2">
                     <h2 className="text-2xl font-bold text-white mb-2">@{userData.username}</h2>
                     {userData.verified && (
-                      <span className="text-blue-500">✓</span>
+                      <span className="text-pink-500">✓</span>
                     )}
                     {userData.private && (
                       <span className="text-xs bg-gray-600 text-white px-2 py-1 rounded">Private</span>

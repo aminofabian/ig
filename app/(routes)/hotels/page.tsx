@@ -67,7 +67,7 @@ export default function HotelsPage() {
                 {hotel.phone_number && (
                   <p className="flex items-center gap-2">
                     <span className="font-medium">Phone:</span>
-                    <a href={`tel:${hotel.phone_number}`} className="text-blue-600 hover:underline">
+                    <a href={`tel:${hotel.phone_number}`} className="text-pink-600 hover:underline">
                       {hotel.phone_number}
                     </a>
                   </p>
@@ -87,7 +87,7 @@ export default function HotelsPage() {
                       href={hotel.website} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline truncate"
+                      className="text-pink-600 hover:underline truncate"
                     >
                       {hotel.website}
                     </a>

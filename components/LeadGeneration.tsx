@@ -511,7 +511,7 @@ export default function LeadGeneration() {
                           </a>
                           <p className="text-sm text-gray-400">{user.full_name}</p>
                           {user.is_business && (
-                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">
+                            <span className="text-xs bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full">
                               Business
                             </span>
                           )}
@@ -577,7 +577,7 @@ export default function LeadGeneration() {
                               href={user.website}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm text-blue-400 hover:text-blue-300 block"
+                              className="text-sm text-pink-400 hover:text-pink-300 block"
                             >
                               🔗 {user.website}
                             </a>
@@ -588,7 +588,7 @@ export default function LeadGeneration() {
                             </p>
                           )}
                           {user.is_verified && (
-                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full mr-2">
+                            <span className="text-xs bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full mr-2">
                               Verified
                             </span>
                           )}
@@ -658,7 +658,7 @@ export default function LeadGeneration() {
                                             href={`https://instagram.com/p/${post.code}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-xs text-blue-400 hover:text-blue-300"
+                                            className="text-xs text-pink-400 hover:text-pink-300"
                                           >
                                             View Post ↗
                                           </a>
@@ -677,7 +677,7 @@ export default function LeadGeneration() {
                                           </span>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                          <span className="text-blue-400">💬</span>
+                                          <span className="text-pink-400">💬</span>
                                           <span className="text-sm text-gray-300">
                                             {post.comment_count.toLocaleString()}
                                           </span>

@@ -79,7 +79,7 @@ const UserDataDisplay = ({ data }: Props) => {
             <CardTitle className="text-xl flex items-center gap-2">
               {data.username || "User"}
               {data.is_verified && (
-                <span className="text-blue-500 text-sm bg-blue-50 px-2 py-1 rounded">
+                <span className="text-pink-500 text-sm bg-pink-50 px-2 py-1 rounded">
                   Verified
                 </span>
               )}
@@ -125,7 +125,7 @@ const UserDataDisplay = ({ data }: Props) => {
               {data.public_email && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <Mail className="w-4 h-4" />
-                  <a href={`mailto:${data.public_email}`} className="hover:text-blue-600">
+                  <a href={`mailto:${data.public_email}`} className="hover:text-pink-600">
                     {data.public_email}
                   </a>
                 </div>
@@ -134,7 +134,7 @@ const UserDataDisplay = ({ data }: Props) => {
               {data.public_phone_number && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <Phone className="w-4 h-4" />
-                  <a href={`tel:${formatPhoneNumber()}`} className="hover:text-blue-600">
+                  <a href={`tel:${formatPhoneNumber()}`} className="hover:text-pink-600">
                     {formatPhoneNumber()}
                   </a>
                 </div>
@@ -154,7 +154,7 @@ const UserDataDisplay = ({ data }: Props) => {
                     href={data.external_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-blue-600"
+                    className="hover:text-pink-600"
                   >
                     {data.external_url}
                   </a>

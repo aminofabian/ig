@@ -54,7 +54,7 @@ const InstagramContactDisplay = ({ data }: Props) => {
                 <CardTitle className="flex items-center gap-2">
                   @{profile.username}
                   {profile.is_verified && (
-                    <span className="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded">
+                    <span className="bg-pink-100 text-pink-600 text-xs px-2 py-0.5 rounded">
                       Verified
                     </span>
                   )}
@@ -104,7 +104,7 @@ const InstagramContactDisplay = ({ data }: Props) => {
                   <Mail className="w-4 h-4" />
                   <a 
                     href={`mailto:${profile.business_email}`}
-                    className="hover:text-blue-600"
+                    className="hover:text-pink-600"
                   >
                     {profile.business_email}
                   </a>
@@ -116,7 +116,7 @@ const InstagramContactDisplay = ({ data }: Props) => {
                   <Phone className="w-4 h-4" />
                   <a 
                     href={`tel:${profile.business_phone}`}
-                    className="hover:text-blue-600"
+                    className="hover:text-pink-600"
                   >
                     {profile.business_phone}
                   </a>
@@ -137,7 +137,7 @@ const InstagramContactDisplay = ({ data }: Props) => {
                     href={profile.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-blue-600"
+                    className="hover:text-pink-600"
                   >
                     {profile.website}
                   </a>

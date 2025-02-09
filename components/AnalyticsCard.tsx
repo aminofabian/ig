@@ -65,7 +65,7 @@ export default function AnalyticsCard() {
                 <img 
                   src={getProxiedImageUrl(data.instagramImage)}
                   alt={data?.instagram || 'Profile'} 
-                  className="w-20 h-20 rounded-full border-2 border-blue-500 object-cover profile-img"
+                  className="w-20 h-20 rounded-full border-2 border-pink-500 object-cover profile-img"
                   onError={() => {
                     const imgElement = document.querySelector('.profile-img') as HTMLImageElement;
                     if (imgElement) {
@@ -74,7 +74,7 @@ export default function AnalyticsCard() {
                   }}
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full border-2 border-blue-500 bg-gray-700 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full border-2 border-pink-500 bg-gray-700 flex items-center justify-center">
                   <span className="text-2xl text-gray-400">
                     {data?.instagram?.[0]?.toUpperCase() || '?'}
                   </span>
@@ -84,7 +84,7 @@ export default function AnalyticsCard() {
                 <div className="flex items-center gap-2">
                   <h2 className="text-2xl font-semibold text-white">{data?.instagram}</h2>
                   {data?.instagramVerified && (
-                    <span className="text-blue-400 text-xl">✓</span>
+                    <span className="text-pink-400 text-xl">✓</span>
                   )}
                 </div>
                 <p className="text-gray-300 text-lg">{data?.instagramFullName}</p>
@@ -151,7 +151,7 @@ export default function AnalyticsCard() {
                   <span className="text-gray-300">Verification Status</span>
                   <span className={`px-3 py-1 rounded-full text-sm ${
                     data?.instagramVerified 
-                      ? 'bg-blue-500/20 text-blue-300' 
+                      ? 'bg-pink-500/20 text-pink-300' 
                       : 'bg-gray-500/20 text-gray-300'
                   }`}>
                     {data?.instagramVerified ? 'Verified' : 'Not Verified'}

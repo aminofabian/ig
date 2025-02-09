@@ -100,7 +100,7 @@ export default function UserProfile({ user }: { user?: InstagramUserData }) {
         {!showConfirm ? (
           <button
             onClick={() => setShowConfirm(true)}
-            className="w-full py-2 px-4 rounded-md text-white font-medium bg-[#f059da] hover:bg-blue-600"
+            className="w-full py-2 px-4 rounded-md text-white font-medium bg-[#f059da] hover:bg-pink-600"
           >
             Connect This Instagram Profile
           </button>

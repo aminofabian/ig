@@ -200,7 +200,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   href={formatSocialUrl('website', profile.website)!} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 text-blue-400 hover:text-blue-300"
+                  className="flex items-center space-x-2 text-pink-400 hover:text-pink-300"
                 >
                   <Globe className="w-4 h-4" />
                   <span>Website</span>
