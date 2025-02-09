@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 import { useNotifications } from "@/lib/stores/useNotifications";
 import Link from "next/link";
 import { useTransition } from "react";
-import { logout } from "@/actions/logout";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
@@ -37,7 +37,10 @@ const Navbar = () => {
   const handleLogout = () => {
     startTransition(async () => {
       try {
-        await logout();
+        await signOut({
+          redirect: true,
+          callbackUrl: "/auth/login"
+        });
       } catch (error) {
         console.error("Failed to logout:", error);
       }

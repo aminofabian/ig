@@ -5,7 +5,7 @@ import { Jost } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { logout } from "@/actions/logout";
+import { signOut } from "next-auth/react";
 import { 
   LayoutDashboard,
   User,
@@ -84,7 +84,10 @@ const Sidebar = () => {
   const handleLogout = () => {
     startTransition(async () => {
       try {
-        await logout();
+        await signOut({
+          redirect: true,
+          callbackUrl: "/auth/login"
+        });
       } catch (error) {
         console.error("Failed to logout:", error);
       }

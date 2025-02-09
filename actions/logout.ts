@@ -1,15 +1,11 @@
 'use server';
 
 import { signOut } from "@/auth";
-import { redirect } from "next/navigation";
 
 export async function logout() {
   try {
-    await signOut({
-      redirectTo: "/auth/login"
-    });
+    await signOut();
   } catch (error) {
     throw new Error("Failed to sign out");
   }
-  redirect("/auth/login");
 }
