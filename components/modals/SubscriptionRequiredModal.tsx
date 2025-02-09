@@ -51,8 +51,9 @@ export default function SubscriptionRequiredModal({ isOpen }: SubscriptionRequir
           </div>
           <div className="flex flex-col gap-3">
             <Button
-              onClick={() => router.push('https://igleadgen.com/pricing')}
+              onClick={() => router.push('https://igleadgen.com/new-pricing')}
               className="w-full bg-[#f059da] hover:bg-[#d441bf] text-white py-5 rounded-lg font-semibold transition-all duration-200 shadow-[0_0_15px_rgba(240,89,218,0.3)] hover:shadow-[0_0_25px_rgba(240,89,218,0.5)]"
+
             >
               View Premium Plans
             </Button>
