@@ -84,13 +84,22 @@ function AdminPage() {
 
   const mappedUsers: User[] = users.map((user: any) => ({
     id: user.id,
+    priceId: user.subscription?.priceId || 'price_basic',
+    currentPeriodStart: user.subscription?.currentPeriodStart || new Date(),
+    currentPeriodEnd: user.subscription?.currentPeriodEnd || new Date(),
+    features: user.subscription?.features || [],
+    metadata: user.subscription?.metadata || {},
+    firstName: user.firstName,
+    lastName: user.lastName,
     name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown',
     email: user.email || '',
     role: user.role,
     status: 'Active',
+
     subscription: {
       status: user.subscription?.status || "INCOMPLETE",
-      type: user.subscription?.priceId?.includes('premium') ? 'Premium' : 'Basic'
+      type: user.subscription?.priceId?.includes('premium') ? 'Premium' : 'Basic',
+      priceId: user.subscription?.priceId || 'price_basic'
     }
   }));
 
