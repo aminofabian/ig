@@ -1,65 +1,83 @@
 import { auth } from '@/auth';
-import db from '@/lib/db';
 import { NextResponse } from 'next/server';
-import { UserRole, SubscriptionStatus } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
-export async function PATCH(req: Request) {
+export async function PATCH(request: Request) {
   try {
-    const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
-      return new NextResponse('Unauthorized', { status: 401 });
+    // Get session with error handling
+    let session;
+    try {
+      session = await auth();
+    } catch (authError) {
+      console.error('Authentication error:', authError);
+      return NextResponse.json(
+        { error: 'Authentication failed' },
+        { status: 401 }
+      );
     }
 
-    const body = await req.json();
+    // Check if session exists and user is authenticated
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Not authenticated' },
+        { status: 401 }
+      );
+    }
+
+    // Check if user is an admin
+    if (session.user?.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Unauthorized - Admin access required' },
+        { status: 403 }
+      );
+    }
+
+    // Parse and validate request body
+    let body;
+    try {
+      body = await request.json();
+    } catch (jsonError) {
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
     const { userId, role, subscriptionStatus } = body;
 
+    // Validate required fields
     if (!userId) {
-      return new NextResponse('User ID is required', { status: 400 });
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
     }
 
+    // Update user data
     const updateData: any = {};
-    if (role && Object.values(UserRole).includes(role)) {
+    if (role) {
       updateData.role = role;
     }
-
-    // First find or create subscription
-    let subscription = await db.subscription.findUnique({
-      where: { id: userId }
-    });
-
     if (subscriptionStatus) {
-      if (subscription) {
-        await db.subscription.update({
-          where: { id: userId },
-          data: { status: subscriptionStatus }
-        });
-      } else {
-        await db.subscription.create({
-          data: {
-            id: userId,
-            status: subscriptionStatus,
-            priceId: 'price_basic',
-            currentPeriodStart: new Date(),
-            currentPeriodEnd: new Date(),
-            features: [],
-            metadata: {},
-            user: {
-              connect: { id: userId }
-            }
-          }
-        });
-      }
+      updateData.subscription = {
+        update: {
+          status: subscriptionStatus
+        }
+      };
     }
 
-    const user = await db.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: updateData,
       include: { subscription: true }
     });
 
-    return NextResponse.json(user);
+    return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error('Update error:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error('Error updating user:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 } 

@@ -3,11 +3,13 @@ import { UserRole, SubscriptionStatus } from '@prisma/client';
 export interface Subscription {
   status: SubscriptionStatus;
   type: 'Premium' | 'Basic';
+  priceId: string;
 }
 
 export interface User {
   id: string;
-  name: string;
+  firstName: string | null;
+  lastName: string | null;
   email: string;
   role: UserRole;
   status: string;

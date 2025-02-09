@@ -11,8 +11,10 @@ export async function GET() {
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: { subscription: true },
+      where: { id: session.user.id },
+      include: {
+        subscription: true
+      }
     });
 
     const hasActiveSubscription = user?.subscription?.status === 'ACTIVE';

@@ -25,25 +25,9 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { id: params.id },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        image: true,
-        username: true,
-        bio: true,
-        location: true,
-        website: true,
-        instagram: true,
-        twitter: true,
-        linkedin: true,
-        github: true,
-        youtube: true,
-        facebook: true,
-        discord: true,
-        tiktok: true,
-      },
+      include: {
+        subscription: true
+      }
     });
 
     if (!user) {

@@ -20,7 +20,8 @@ import {
   Search,
   Filter,
   Download,
-  Upload
+  Upload,
+  Plus
 } from "lucide-react";
 import { useUser } from "@/lib/stores/useUser";
 import { SubscriptionStatus } from "@/types/admin";
@@ -29,6 +30,7 @@ import { toast, Toaster } from 'sonner';
 import PusherClient from 'pusher-js';
 import MessageListener from "@/components/admin/users/MessageListener";
 import { AdminMessageListener } from "@/components/admin/AdminMessageListener";
+import { AddUserModal } from "@/components/admin/AddUserModal";
 
 
 
@@ -55,6 +57,7 @@ function AdminPage() {
 
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [pusherClient, setPusherClient] = useState<PusherClient | null>(null);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
 
   useEffect(() => {
@@ -323,13 +326,25 @@ function AdminPage() {
 
   return (
     <div className="overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13111C] via-[#0F0F0F] to-black min-h-screen">
-         <Toaster />
+      <Toaster />
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_-30%,#f059da10,transparent)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_700px_at_80%_60%,#f059da05,transparent)]" />
       <div className="absolute inset-0 bg-grid-white/[0.01]" />
 
       <div className="space-y-8 p-4 md:p-8 max-w-7xl mx-auto relative">
+        {/* Header with Add User button */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-white">User Management</h1>
+          <Button
+            onClick={() => setIsAddUserModalOpen(true)}
+            className="bg-[#f059da] hover:bg-[#f059da]/90 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add User
+          </Button>
+        </div>
+
         {/* Header - Enhanced gradient */}
         <div className="flex flex-col gap-4 bg-black/40 p-6 md:p-8 rounded-xl border border-white/20 relative overflow-hidden backdrop-blur-xl">
           <div className="absolute inset-0 bg-[radial-gradient(circle_800px_at_50%_-100px,#f059da15,transparent)]" />
@@ -673,6 +688,13 @@ function AdminPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Add User Modal */}
+        <AddUserModal
+          isOpen={isAddUserModalOpen}
+          onClose={() => setIsAddUserModalOpen(false)}
+          onUserAdded={fetchAllUsers}
+        />
       </div>
     </div>
   );

@@ -8,13 +8,16 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { User } from '@/types/admin';
 import { UserRole } from '@prisma/client';
 import { SubscriptionStatus } from '@prisma/client';
+import { useState } from 'react';
+import { Mail, MessageSquare, CreditCard } from "lucide-react";
+
 interface UsersTableProps {
   users: User[];
   onEmailUser: (user: User) => void;
   onMessageUser: (user: User) => void;
   onManageSubscription: (user: User) => void;
-  onUpdateRole: (userId: string, role: UserRole) => Promise<void>;
-  onUpdateSubscription: (userId: string, subscriptionStatus: SubscriptionStatus) => Promise<void>;
+  onUpdateRole: (userId: string, role: UserRole) => void;
+  onUpdateSubscription: (userId: string, status: SubscriptionStatus) => void;
 }
 
 // Define available roles
@@ -40,6 +43,48 @@ export const UsersTable: React.FC<UsersTableProps> = ({
   onUpdateRole,
   onUpdateSubscription,
 }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
+    await onUpdateRole(userId, newRole);
+  };
+
+  const handleSubscriptionChange = async (userId: string, newStatus: SubscriptionStatus) => {
+    try {
+      await onUpdateSubscription(userId, newStatus);
+      // Optionally add a toast notification or other feedback
+    } catch (error) {
+      console.error('Error updating subscription:', error);
+      // Handle error (e.g., show error toast)
+    }
+  };
+
+  const filteredUsers = users
+    .filter(user => {
+      const searchLower = searchTerm.toLowerCase();
+      const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      return (
+        fullName.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower) ||
+        user.role.toLowerCase().includes(searchLower) ||
+        (user.subscription?.status || '').toLowerCase().includes(searchLower)
+      );
+    })
+    .map(user => ({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown',
+      email: user.email || '',
+      role: user.role,
+      status: user.subscription?.status || 'INACTIVE',
+      subscription: {
+        status: user.subscription?.status || 'INACTIVE',
+        type: (user.subscription?.priceId?.includes('premium') ? 'Premium' : 'Basic') as 'Premium' | 'Basic',
+        priceId: user.subscription?.priceId || 'price_basic'
+      }
+    }));
+
   return (
     <Card className="p-6 bg-black/40 border-white/20 backdrop-blur-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -50,11 +95,13 @@ export const UsersTable: React.FC<UsersTableProps> = ({
             <input 
               type="text" 
               placeholder="Search users..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-64 h-10 pl-9 pr-4 rounded-lg bg-black/40 border border-white/20 focus:border-[#f059da] focus:ring-[#f059da]/10 transition-all text-white placeholder:text-white/50"
             />
           </div>
           <Button className="bg-[#f059da] hover:bg-[#f059da]/90">
-            Add User
+            Search User
           </Button>
         </div>
       </div>
@@ -69,7 +116,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-3">
@@ -83,7 +130,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                 <td className="py-3 px-4">
                   <Select
                     value={user.role}
-                    onValueChange={(value: UserRole) => onUpdateRole(user.id, value)}
+                    onValueChange={(value: UserRole) => handleRoleChange(user.id, value)}
                   >
                     <SelectTrigger className="w-32 bg-black/40 border-white/20 text-white">
                       <SelectValue placeholder="Select role" />
@@ -103,10 +150,8 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                 </td>
                 <td className="py-3 px-4">
                   <Select
-                    value={user.subscription?.status || 'INCOMPLETE'}
-                    onValueChange={(value: SubscriptionStatus) => 
-                      onUpdateSubscription(user.id, value)
-                    }
+                    value={user.status}
+                    onValueChange={(value: SubscriptionStatus) => handleSubscriptionChange(user.id, value)}
                   >
                     <SelectTrigger className="w-32 bg-black/40 border-white/20 text-white">
                       <SelectValue placeholder="Select status" />
@@ -116,7 +161,11 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                         <SelectItem 
                           key={status} 
                           value={status}
-                          className="text-white hover:bg-[#f059da]/10 focus:bg-[#f059da]/10 focus:text-white"
+                          className={`text-white hover:bg-[#f059da]/10 focus:bg-[#f059da]/10 focus:text-white ${
+                            status === 'ACTIVE' ? 'text-green-400' :
+                            status === 'INACTIVE' ? 'text-red-400' :
+                            'text-yellow-400'
+                          }`}
                         >
                           {status}
                         </SelectItem>
@@ -126,12 +175,27 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-2">
-                    <UserActions 
-                      user={user}
-                      onEmail={() => onEmailUser(user)}
-                      onMessage={() => onMessageUser(user)}
-                      onManageSubscription={() => onManageSubscription(user)}
-                    />
+                    <button
+                      onClick={() => onEmailUser(user)}
+                      className="p-1.5 rounded-lg hover:bg-[#f059da]/10 text-white/80 hover:text-[#f059da] transition-all"
+                      title="Send Email"
+                    >
+                      <Mail className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => onMessageUser(user)}
+                      className="p-1.5 rounded-lg hover:bg-[#f059da]/10 text-white/80 hover:text-[#f059da] transition-all"
+                      title="Send Message"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => onManageSubscription(user)}
+                      className="p-1.5 rounded-lg hover:bg-[#f059da]/10 text-white/80 hover:text-[#f059da] transition-all"
+                      title="Manage Subscription"
+                    >
+                      <CreditCard className="h-4 w-4" />
+                    </button>
                   </div>
                 </td>
               </tr>
