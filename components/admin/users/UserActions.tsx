@@ -1,15 +1,12 @@
 import { Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
 import { User } from "@/types/admin";
 import { SubscriptionStatus } from '@prisma/client';
-import { UserRole } from "@/types/admin";
 
 interface UserActionsProps {
   user: User;
   onEmail: () => void;
   onMessage: () => void;
   onManageSubscription: () => void;
-  onUpdateRole: (role: UserRole) => void;
-  onUpdateSubscription: (status: SubscriptionStatus) => void;
 }
 
 export function UserActions({ 

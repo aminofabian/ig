@@ -19,3 +19,5 @@ export interface User {
 
 // Re-export Prisma's SubscriptionStatus
 export { SubscriptionStatus } from '@prisma/client';
+
+export type UserRole = 'ADMIN' | 'USER' | 'MODERATOR'; // or whatever roles you need
