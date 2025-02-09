@@ -85,7 +85,6 @@ const Sidebar = () => {
     startTransition(async () => {
       try {
         await logout();
-        router.push("/auth/login"); // Redirect to login page after logout
       } catch (error) {
         console.error("Failed to logout:", error);
       }
