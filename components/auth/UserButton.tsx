@@ -29,7 +29,7 @@ export const UserButton = () => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer hover:bg-[#f059da]/10"
-          onClick={() => router.push("/auth/logout")}
+          onClick={() => router.push("/auth/login")}
         >
           Logout
         </DropdownMenuItem>

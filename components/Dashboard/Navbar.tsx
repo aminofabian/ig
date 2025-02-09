@@ -35,9 +35,7 @@ const Navbar = () => {
   const [isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
-    await signOut({
-      callbackUrl: "/auth/login",
-    });
+    await signOut();
   };
 
   // Calculate unread messages count

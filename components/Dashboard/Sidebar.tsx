@@ -77,12 +77,9 @@ const routes = {
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut({
-      callbackUrl: "/auth/login",
-    });
+    await signOut();
   };
 
   return (

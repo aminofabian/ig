@@ -8,6 +8,11 @@ import Google from "next-auth/providers/google";
 import { UserRole } from "@prisma/client";
 
 export const authConfig: NextAuthConfig = {
+  pages: {
+    signIn: "/auth/login",
+    signOut: "/auth/login",
+    error: "/auth/login",
+  },
   callbacks: {
     async session({ session, token }) {
       if (token.sub && session.user) {
