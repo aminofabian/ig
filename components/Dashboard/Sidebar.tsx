@@ -81,7 +81,7 @@ const Sidebar = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     startTransition(async () => {
       try {
         await logout();

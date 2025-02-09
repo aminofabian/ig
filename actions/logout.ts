@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 
 export async function logout() {
   try {
-    await signOut();
-    redirect("/auth/login");
+    await signOut({
+      redirectTo: "/auth/login"
+    });
   } catch (error) {
     throw new Error("Failed to sign out");
   }
+  redirect("/auth/login");
 }

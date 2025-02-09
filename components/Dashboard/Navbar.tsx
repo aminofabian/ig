@@ -34,7 +34,7 @@ const Navbar = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [isPending, startTransition] = useTransition();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     startTransition(async () => {
       try {
         await logout();
