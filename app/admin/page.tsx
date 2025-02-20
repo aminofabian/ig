@@ -31,9 +31,7 @@ import PusherClient from 'pusher-js';
 import MessageListener from "@/components/admin/users/MessageListener";
 import { AdminMessageListener } from "@/components/admin/AdminMessageListener";
 import { AddUserModal } from "@/components/admin/AddUserModal";
-
-
-
+import { SystemSettings } from '@/components/admin/settings/SystemSettings';
 
 interface Message {
   id: string;
@@ -521,10 +519,13 @@ function AdminPage() {
           </TabsContent>
 
           <TabsContent value="settings">
-            <Card className="p-6 bg-zinc-900/50 border-zinc-800/50">
-              <h2 className="text-2xl font-bold mb-4 text-white">System Settings</h2>
-              <p className="text-white/80">Enhanced system configuration options will be displayed here.</p>
-            </Card>
+            <div className="space-y-6">
+              <SystemSettings />
+              <Card className="p-6 bg-zinc-900/50 border-zinc-800/50">
+                <h2 className="text-2xl font-bold mb-4 text-white">System Settings</h2>
+                <p className="text-white/80">Enhanced system configuration options will be displayed here.</p>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
 
@@ -709,4 +710,3 @@ function AdminPage() {
   );
 }
 export default AdminPage;
-

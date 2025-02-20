@@ -4,6 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
+    // Check system settings first
+    const systemSettings = await prisma.systemSettings.findFirst();
+    if (systemSettings?.disableSubscriptionPopup) {
+      return NextResponse.json({ hasActiveSubscription: true });
+    }
+
     const session = await auth();
     
     if (!session?.user?.email) {
@@ -21,6 +27,7 @@ export async function GET() {
 
     return NextResponse.json({ hasActiveSubscription });
   } catch (error) {
+    console.error('Subscription check error:', error);
     return NextResponse.json({ hasActiveSubscription: false });
   }
-} 
+}

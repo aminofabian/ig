@@ -59,11 +59,30 @@ export async function PATCH(request: Request) {
       updateData.role = role;
     }
     if (subscriptionStatus) {
-      updateData.subscription = {
-        update: {
-          status: subscriptionStatus
-        }
-      };
+      // First check if user has an existing subscription
+      const existingSubscription = await prisma.subscription.findUnique({
+        where: { userId }
+      });
+
+      if (existingSubscription) {
+        // Update existing subscription
+        updateData.subscription = {
+          update: {
+            status: subscriptionStatus
+          }
+        };
+      } else {
+        // Create new subscription
+        updateData.subscription = {
+          create: {
+            status: subscriptionStatus,
+            priceId: 'default', // You might want to adjust this based on your needs
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+            features: {} // Add default features as needed
+          }
+        };
+      }
     }
 
     const updatedUser = await prisma.user.update({

@@ -398,3 +398,13 @@ model Lead {
   @@index([followers])
   @@index([engagementRate])
 }
+
+// System Settings model
+model SystemSettings {
+  id                        String   @id @default(cuid())
+  disableSubscriptionPopup  Boolean  @default(false)
+  updatedAt                DateTime @updatedAt
+  createdAt                DateTime @default(now())
+
+  @@map("system_settings")
+}

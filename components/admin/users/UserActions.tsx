@@ -1,6 +1,5 @@
 import { Settings, Mail, MessageSquare, Ban, Bell, X } from "lucide-react";
 import { User } from "@/types/admin";
-import { SubscriptionStatus } from '@prisma/client';
 
 interface UserActionsProps {
   user: User;
