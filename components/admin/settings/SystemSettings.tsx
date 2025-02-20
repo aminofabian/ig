@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 export function SystemSettings() {
   const [disableSubscriptionPopup, setDisableSubscriptionPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -26,6 +27,7 @@ export function SystemSettings() {
   };
 
   const handleToggleSubscriptionPopup = async () => {
+    setIsSaving(true);
     try {
       const response = await fetch('/api/settings', {
         method: 'PATCH',
@@ -45,6 +47,8 @@ export function SystemSettings() {
     } catch (error) {
       console.error('Error updating settings:', error);
       toast.error('Failed to update settings');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -62,14 +66,32 @@ export function SystemSettings() {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-4">
-          <Switch
-            id="disable-subscription-popup"
-            checked={disableSubscriptionPopup}
-            onCheckedChange={handleToggleSubscriptionPopup}
-          />
-          <Label htmlFor="disable-subscription-popup">
-            Disable Subscription Popup for All Users
-          </Label>
+          <div className="flex items-center gap-2">
+            <Switch
+              id="disable-subscription-popup"
+              checked={disableSubscriptionPopup}
+              onCheckedChange={handleToggleSubscriptionPopup}
+              disabled={isSaving}
+            />
+            <span className={`text-sm px-2 py-0.5 rounded-full ${
+              disableSubscriptionPopup 
+                ? "bg-green-500/10 text-green-500" 
+                : "bg-yellow-500/10 text-yellow-500"
+            }`}>
+              {disableSubscriptionPopup ? "Disabled" : "Enabled"}
+            </span>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="disable-subscription-popup">
+              Subscription Popup is {disableSubscriptionPopup ? "disabled" : "enabled"} for all users
+            </Label>
+            <p className="text-sm text-muted-foreground">
+              {disableSubscriptionPopup ? 
+                "✓ Subscription popup is currently disabled for all users" : 
+                "✗ Subscription popup is currently enabled for users without active subscriptions"}
+            </p>
+            {isSaving && <p className="text-sm text-muted-foreground">Saving...</p>}
+          </div>
         </div>
       </CardContent>
     </Card>
