@@ -7,13 +7,24 @@ import { LockIcon } from "lucide-react";
 
 interface SubscriptionRequiredModalProps {
   isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function SubscriptionRequiredModal({ isOpen }: SubscriptionRequiredModalProps) {
+export default function SubscriptionRequiredModal({ isOpen, onOpenChange }: SubscriptionRequiredModalProps) {
   const router = useRouter();
 
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange(open);
+    if (!open) {
+      // Remove the parameter from URL when closing
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('subscription_required');
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md border border-[#f059da]/20 bg-black/95">
         <div className="flex justify-center mb-4">
           <div className="p-3 rounded-full bg-[#f059da]/10 text-[#f059da]">
@@ -49,20 +60,27 @@ export default function SubscriptionRequiredModal({ isOpen }: SubscriptionRequir
               <span>AI-Powered Growth Strategies</span>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex justify-center space-x-4">
             <Button
-              onClick={() => router.push('https://igleadgen.com/new-pricing')}
-              className="w-full bg-[#f059da] hover:bg-[#d441bf] text-white py-5 rounded-lg font-semibold transition-all duration-200 shadow-[0_0_15px_rgba(240,89,218,0.3)] hover:shadow-[0_0_25px_rgba(240,89,218,0.5)]"
-
+              variant="secondary"
+              onClick={() => {
+                handleOpenChange(false);
+                router.push('/pricing');
+              }}
+              className="bg-[#f059da] hover:bg-[#f059da]/90 text-white"
             >
-              View Premium Plans
+              View Plans
             </Button>
-            <p className="text-xs text-center text-gray-500">
-              Cancel anytime. 7-day money-back guarantee.
-            </p>
+            <Button
+              variant="outline"
+              onClick={() => handleOpenChange(false)}
+              className="border-[#f059da]/20 hover:bg-[#f059da]/10 text-white"
+            >
+              Cancel
+            </Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}

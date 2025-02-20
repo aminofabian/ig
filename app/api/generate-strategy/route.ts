@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import { withSubscriptionCheck } from '@/lib/api-middleware';
 
-export async function POST(req: Request) {
+async function handler(req: Request) {
   try {
     const session = await auth();
 
@@ -84,3 +85,5 @@ Format the response in markdown with clear sections and bullet points.`
     );
   }
 }
+
+export const POST = withSubscriptionCheck(handler);

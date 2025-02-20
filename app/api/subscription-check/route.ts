@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { checkSubscriptionAccess } from "@/lib/subscription";
 
 export async function GET() {
   try {
-    // Check system settings first
-    const systemSettings = await prisma.systemSettings.findFirst();
-    if (systemSettings?.disableSubscriptionPopup) {
+    // Check global subscription access first
+    const { hasAccess } = await checkSubscriptionAccess();
+    if (hasAccess) {
       return NextResponse.json({ hasActiveSubscription: true });
     }
 
