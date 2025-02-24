@@ -101,74 +101,46 @@ function AdminPage() {
     }
   }));
 
-
   useEffect(() => {
+    // Make sure to check if we're in the browser
     if (typeof window !== 'undefined') {
-      const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
-      const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
-      
-      // Validate required configuration
-      if (!pusherKey || !pusherCluster) {
-        console.error('Pusher configuration missing');
-        return;
-      }
-  
-      try {
-        const pusher = new PusherClient(pusherKey, {
-          cluster: pusherCluster,
-          forceTLS: true
-        });
-        
-        setPusherClient(pusher);
-  
-        return () => {
-          pusher.disconnect();
-        };
-      } catch (error) {
-        console.error('Error initializing Pusher:', error);
-      }
+      const pusher = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      });
+      setPusherClient(pusher);
+
+      return () => {
+        pusher.disconnect();
+      };
     }
   }, []);
-  // useEffect(() => {
-  //   // Make sure to check if we're in the browser
-  //   if (typeof window !== 'undefined') {
-  //     const pusher = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-  //       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-  //     });
-  //     setPusherClient(pusher);
 
-  //     return () => {
-  //       pusher.disconnect();
-  //     };
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!pusherClient || !selectedUser || !isMessageModalOpen) return;
 
-  // useEffect(() => {
-  //   if (!pusherClient || !selectedUser || !isMessageModalOpen) return;
-
-  //   const channel = pusherClient.subscribe(`user-${selectedUser.id}`);
+    const channel = pusherClient.subscribe(`user-${selectedUser.id}`);
     
-  //   channel.bind('new-message', (data: { content: string; timestamp: string }) => {
-  //     setMessages(prev => ({
-  //       ...prev,
-  //       [selectedUser.id]: [
-  //         ...(prev[selectedUser.id] || []),
-  //         {
-  //           id: Math.random().toString(),
-  //           content: data.content,
-  //           timestamp: data.timestamp,
-  //           fromAdmin: true,
-  //           read: false
-  //         }
-  //       ]
-  //     }));
-  //   });
+    channel.bind('new-message', (data: { content: string; timestamp: string }) => {
+      setMessages(prev => ({
+        ...prev,
+        [selectedUser.id]: [
+          ...(prev[selectedUser.id] || []),
+          {
+            id: Math.random().toString(),
+            content: data.content,
+            timestamp: data.timestamp,
+            fromAdmin: true,
+            read: false
+          }
+        ]
+      }));
+    });
 
-  //   return () => {
-  //     channel.unbind_all();
-  //     channel.unsubscribe();
-  //   };
-  // }, [pusherClient, selectedUser, isMessageModalOpen]);
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [pusherClient, selectedUser, isMessageModalOpen]);
 
 
   const overviewStats = {
