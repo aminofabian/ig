@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import logoImage from '../../public/igleadlogo.png';
+import Image from 'next/image';
 
 export const UserButton = () => {
   const router = useRouter();
@@ -17,7 +19,8 @@ export const UserButton = () => {
       <DropdownMenuTrigger className="focus-visible:outline-none">
         <Avatar className="h-8 w-8">
           <AvatarImage src="/default-avatar.png" />
-          <AvatarFallback className="bg-[#f059da]">IG</AvatarFallback>
+          <Image src={logoImage} alt="logo" className="h-8 w-8" />
+          {/* <img src={logoImage} alt="logo" className="h-8 w-8" /> */}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-black text-white border-[#f059da]/20" align="end">
