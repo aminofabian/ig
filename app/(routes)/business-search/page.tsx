@@ -119,7 +119,7 @@ export default function BusinessSearchPage() {
   return (
     <div className="h-full p-4 space-y-2">
       <div className="border-b border-neutral-800 pb-4">
-        <h2 className="text-2xl font-bold tracking-tight text-white">Business Search</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-white">Google Business Search</h2>
         <p className="text-sm text-neutral-400">
           Search and export business information
         </p>

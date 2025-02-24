@@ -88,13 +88,13 @@ const HomePage = () => {
       stats: "Precision tools"
     },
     {
-      label: "Business Search",
+      label: "Google Business Search",
       icon: BarChart2,
       color: "text-[#f059da]",
       bgColor: "bg-[#f059da]/10",
       href: "/business-search",
       description: "Find businesses in your area",
-      stats: "Local business search"
+      stats: "Local google business search"
     },
     // {
     //   label: "Image Generator",
