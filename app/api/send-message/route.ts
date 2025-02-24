@@ -1,44 +1,34 @@
-import { NextResponse } from 'next/server';
-import { pusherServer } from '@/lib/pusher';
-import { PrismaClient } from '@prisma/client';
+// app/api/send-message/route.ts
+import Pusher from 'pusher';
 
-const prisma = new PrismaClient();
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID!,
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+  secret: process.env.PUSHER_SECRET!,
+  cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+  useTLS: true
+});
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { userId, content } = await request.json();
-
-    if (!userId || !content) {
-      return NextResponse.json({ error: 'Missing userId or content' }, { status: 400 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    if (!pusherServer) {
-      console.warn('🚨 Pusher server is not initialized.');
-      return NextResponse.json({ error: 'Pusher not available' }, { status: 500 });
-    }
-
-    // Trigger the message event for this specific user
-    await pusherServer.trigger(`private-user-${userId}`, 'new-message', {
+    const { userId, content } = await req.json();
+    
+    await pusher.trigger(`user-${userId}`, 'new-message', {
       content,
-      timestamp: new Date().toISOString(),
-      fromAdmin: true,
+      timestamp: new Date().toISOString()
     });
 
-    return NextResponse.json({ success: true });
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (error) {
-    console.error('❌ Error sending message:', error);
-    return NextResponse.json({ error: 'Failed to send message' }, { status: 500 });
+    return new Response(JSON.stringify({ error: 'Failed to send message' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
-
 // // First, create a new file: app/api/send-message/route.ts
 // import { NextResponse } from 'next/server';
 // import { pusherServer } from '@/lib/pusher'; // Import the shared pusher instance
@@ -55,7 +45,7 @@ export async function POST(request: Request) {
     
 //     // Trigger the message event for this specific user
 //     await pusherServer.trigger(
-//       `private-user-${userId}`,
+//       `private-user-${user}`,
 //       'new-message',
 //       {
 //         content,
