@@ -57,7 +57,7 @@ export default function AnalyticsCard() {
   ) : (
     <div>
       <h1 className="text-3xl font-bold text-white text-center mb-8">
-        Instagram Analytics Dashboards
+        Instagram Analytics Dashboards Instagram Analytics Dashboard Instagram Analytics Dashboard
       </h1>
 
       {/* Profile Overview */}
