@@ -61,107 +61,108 @@ export default function AnalyticsCard() {
       </h1>
 
       {/* Profile Overview */}
-      <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-        <div className="p-6 flex items-center gap-6">
-          {data?.instagramImage ? (
-            <img 
-              src={getProxiedImageUrl(data.instagramImage)}
-              alt={data?.instagram || 'Profile'} 
-              className="w-20 h-20 rounded-full border-2 border-pink-500 object-cover profile-img"
-              onError={() => {
-                const imgElement = document.querySelector('.profile-img') as HTMLImageElement;
-                if (imgElement) {
-                  imgElement.style.display = 'none';
-                }
-              }}
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-full border-2 border-pink-500 bg-[#f059da]/15 flex items-center justify-center">
-              <span className="text-2xl text-gray-300">
-                {data?.instagram?.[0]?.toUpperCase() || '?'}
-              </span>
-            </div>
-          )}
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-semibold text-white">{data?.instagram}</h2>
-              {data?.instagramVerified && (
-                <span className="text-pink-400 text-xl">✓</span>
-              )}
-            </div>
-            <p className="text-gray-300 text-lg">{data?.instagramFullName}</p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-          <div className="p-6 text-center">
-            <div className="text-3xl font-bold text-white mb-2">
-              {data?.postsCount?.toLocaleString() || '0'}
-            </div>
-            <div className="text-gray-300 text-lg">Posts</div>
-          </div>
-        </Card>
-        <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-          <div className="p-6 text-center">
-            <div className="text-3xl font-bold text-white mb-2">
-              {data?.followersCount?.toLocaleString() || '0'}
-            </div>
-            <div className="text-gray-300 text-lg">Followers</div>
-          </div>
-        </Card>
-        <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-          <div className="p-6 text-center">
-            <div className="text-3xl font-bold text-white mb-2">
-              {data?.followingCount?.toLocaleString() || '0'}
-            </div>
-            <div className="text-gray-300 text-lg">Following</div>
-          </div>
-        </Card>
+      <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg mt-6">
+  <div className="p-6 flex items-center gap-6">
+    {data?.instagramImage ? (
+      <img 
+        src={getProxiedImageUrl(data.instagramImage)}
+        alt={data?.instagram || 'Profile'} 
+        className="w-20 h-20 rounded-full border-2 border-pink-500 object-cover profile-img"
+        onError={() => {
+          const imgElement = document.querySelector('.profile-img') as HTMLImageElement;
+          if (imgElement) {
+            imgElement.style.display = 'none';
+          }
+        }}
+      />
+    ) : (
+      <div className="w-20 h-20 rounded-full border-2 border-pink-500 bg-[#f059da]/15 flex items-center justify-center">
+        <span className="text-2xl text-gray-300">
+          {data?.instagram?.[0]?.toUpperCase() || '?'}
+        </span>
       </div>
+    )}
+    <div>
+      <div className="flex items-center gap-2">
+        <h2 className="text-2xl font-semibold text-white">{data?.instagram}</h2>
+        {data?.instagramVerified && (
+          <span className="text-pink-400 text-xl">✓</span>
+        )}
+      </div>
+      <p className="text-gray-300 text-lg">{data?.instagramFullName}</p>
+    </div>
+  </div>
+</Card>
 
-      {/* Bio Section */}
-      {data?.instagramBio && (
-        <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-          <div className="p-6">
-            <h3 className="text-xl font-semibold text-white mb-3">Biography</h3>
-            <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
-              {data.instagramBio}
-            </p>
-          </div>
-        </Card>
-      )}
+{/* Stats Grid */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
+    <div className="p-6 text-center">
+      <div className="text-3xl font-bold text-white mb-2">
+        {data?.postsCount?.toLocaleString() || '0'}
+      </div>
+      <div className="text-gray-300 text-lg">Posts</div>
+    </div>
+  </Card>
+  <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
+    <div className="p-6 text-center">
+      <div className="text-3xl font-bold text-white mb-2">
+        {data?.followersCount?.toLocaleString() || '0'}
+      </div>
+      <div className="text-gray-300 text-lg">Followers</div>
+    </div>
+  </Card>
+  <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
+    <div className="p-6 text-center">
+      <div className="text-3xl font-bold text-white mb-2">
+        {data?.followingCount?.toLocaleString() || '0'}
+      </div>
+      <div className="text-gray-300 text-lg">Following</div>
+    </div>
+  </Card>
+</div>
 
-      {/* Account Info */}
-      <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg">
-        <div className="p-6">
-          <h3 className="text-xl font-semibold text-white mb-4">Account Information</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center py-2 border-b border-[#f059da]/40">
-              <span className="text-gray-300">Account Type</span>
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                data?.instagramPrivate 
-                  ? 'bg-red-500/20 text-red-300' 
-                  : 'bg-green-500/20 text-green-300'
-              }`}>
-                {data?.instagramPrivate ? 'Private' : 'Public'}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-[#f059da]/40">
-              <span className="text-gray-300">Verification Status</span>
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                data?.instagramVerified 
-                  ? 'bg-pink-500/20 text-pink-300' 
-                  : 'bg-gray-500/20 text-gray-300'
-              }`}>
-                {data?.instagramVerified ? 'Verified' : 'Not Verified'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </Card>
+{/* Bio Section */}
+{data?.instagramBio && (
+  <Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg mt-6">
+    <div className="p-6">
+      <h3 className="text-xl font-semibold text-white mb-3">Biography</h3>
+      <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+        {data.instagramBio}
+      </p>
+    </div>
+  </Card>
+)}
+
+{/* Account Info */}
+<Card className="bg-[#f059da]/10 border border-[#f059da]/40 rounded-lg mt-6">
+  <div className="p-6">
+    <h3 className="text-xl font-semibold text-white mb-4">Account Information</h3>
+    <div className="space-y-3">
+      <div className="flex justify-between items-center py-2 border-b border-[#f059da]/40">
+        <span className="text-gray-300">Account Type</span>
+        <span className={`px-3 py-1 rounded-full text-sm ${
+          data?.instagramPrivate 
+            ? 'bg-red-500/20 text-red-300' 
+            : 'bg-green-500/20 text-green-300'
+        }`}>
+          {data?.instagramPrivate ? 'Private' : 'Public'}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-2 border-b border-[#f059da]/40">
+        <span className="text-gray-300">Verification Status</span>
+        <span className={`px-3 py-1 rounded-full text-sm ${
+          data?.instagramVerified 
+            ? 'bg-pink-500/20 text-pink-300' 
+            : 'bg-gray-500/20 text-gray-300'
+        }`}>
+          {data?.instagramVerified ? 'Verified' : 'Not Verified'}
+        </span>
+      </div>
+    </div>
+  </div>
+</Card>
+
     </div>
   )}
 </div>
