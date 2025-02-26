@@ -19,7 +19,7 @@ const Header = ({ label }: HeaderProps) => {
           <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full blur-md" />
           <Image 
             src="/instagram-icon.png" 
-            alt="Logo" 
+            alt="" 
             width={50} 
             height={50}
             className="object-contain relative z-10 drop-shadow-[0_0_8px_rgba(240,89,218,0.5)]"
