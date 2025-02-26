@@ -13,9 +13,9 @@ interface HeaderProps {
 
 const Header = ({ label }: HeaderProps) => {
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-2">
+    <div className="">
       <div className="flex items-center gap-3 group">
-        <div className="relative transition-transform duration-300 group-hover:scale-110">
+        <div className="">
           <div className="" />
           <Image 
             src="/igleadlogo.png" 
@@ -26,8 +26,7 @@ const Header = ({ label }: HeaderProps) => {
           />
         </div>
         <h1 className={cn(
-          "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
-          "transition-all duration-300 group-hover:from-[#f059da] group-hover:to-[#f059da]",
+          
           font.className
         )}>
           IgLeadGen
