@@ -20,8 +20,8 @@ const Header = ({ label }: HeaderProps) => {
           <Image 
             src="/igleadlogo.png" 
             alt="Logo" 
-            width={50} 
-            height={50}
+            width={20} 
+            height={30}
             className="object-contain relative z-10"
           />
         </div>
