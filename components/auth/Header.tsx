@@ -15,8 +15,8 @@ const Header = ({ label }: HeaderProps) => {
   return (
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <div className="flex items-center gap-3 group">
-        <div className="relative duration-300 group-hover:scale-110">
-        <div className="from-[#f059da] to-[#a03494] " />
+        <div className="relative transition-transform duration-300 group-hover:scale-110">
+        <div className="absolute bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" />
 
           {/* <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " /> */}
           <Image 
