@@ -16,7 +16,7 @@ const Header = ({ label }: HeaderProps) => {
     <div className="w-full flex flex-col items-center justify-center gap-2">
       <div className="flex items-center gap-3 group">
         <div className="relative transition-transform duration-300 group-hover:scale-110">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " />
           <Image 
             src="/igleadlogo.png" 
             alt="Logo" 
