@@ -22,7 +22,7 @@ const Header = ({ label }: HeaderProps) => {
             alt="Logo" 
             width={50} 
             height={50}
-            className="object-contain relative z-10 drop-shadow-[0_0_8px_rgba(240,89,218,0.5)]"
+            className="object-contain relative z-10"
           />
         </div>
         <h1 className={cn(
