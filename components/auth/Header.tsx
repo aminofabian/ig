@@ -16,14 +16,14 @@ const Header = ({ label }: HeaderProps) => {
     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <div className="flex items-center gap-3 group">
         <div className="relative transition-transform duration-300 group-hover:scale-110">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full blur-md" />
           <Image 
-            src="/igleadlogo.png" 
-            alt="" 
-            width={70} 
-            height={70}
-            className="object-contain relative z-10 drop-shadow-[0_0_8px_rgba(240,89,218,0.5)]"
-          />
+  src="/igleadlogo.png" 
+  alt="Logo" 
+  width={100} 
+  height={100}
+  className="object-contain"
+/>
         </div>
         <h1 className={cn(
           "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
