@@ -15,17 +15,19 @@ const Header = ({ label }: HeaderProps) => {
   return (
 
 
-    <div className="w-full flex flex-col items-center justify-center gap-2">
+    <div className="w-full flex flex-col gap-y-4 items-center justify-center">
       <div className="flex items-center gap-3 group">
         <div className="relative transition-transform duration-300 group-hover:scale-110">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full" />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" /> */}
+
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " />
           <Image 
-            src="/instagram-icon.png" 
-            alt="" 
-            width={50} 
-            height={50}
-            className="object-contain relative z-10 drop-shadow-[0_0_8px_rgba(240,89,218,0.5)]"
-          />
+  src="/instagram-icon.png" 
+  alt="" 
+  width={50} 
+  height={50}
+  className="object-contain"
+/> 
         </div>
         <h1 className={cn(
           "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
@@ -35,34 +37,8 @@ const Header = ({ label }: HeaderProps) => {
           IgLeadGen
         </h1>
       </div>
-      <p className="text-muted-foreground text-xs">{label}</p>
+      <p className="text-muted-foreground text-sm">{label}</p>
     </div>
-//     <div className="w-full flex flex-col gap-y-4 items-center justify-center">
-//       <div className="flex items-center gap-3 group">
-//         <div className="relative transition-transform duration-300 group-hover:scale-110">
-//           <div className="absolute inset-0 bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" />
-//         <div className="w-[50px] h-[50px] bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" /> 
-
-
-//           <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " />
-//           <Image 
-//   src="/instagram-icon.png" 
-//   alt="" 
-//   width={50} 
-//   height={50}
-//   className="object-contain"
-// /> 
-//         </div>
-//         <h1 className={cn(
-//           "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
-//           "transition-all duration-300 group-hover:from-[#f059da] group-hover:to-[#f059da]",
-//           font.className
-//         )}>
-//           IgLeadGen
-//         </h1>
-//       </div>
-//       <p className="text-muted-foreground text-sm">{label}</p>
-//     </div>
   );
 };
 
