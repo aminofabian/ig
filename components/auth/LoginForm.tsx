@@ -73,7 +73,7 @@ export const LoginForm = () => {
   return (
     <div className="text-slate-50">
       <CardWrapper
-        headerLabel="Valencia"
+        headerLabel="Welcome Back"
         backButtonLabel="Don't Have an Account?"
         backButtonHref="/auth/register"
         showSocial
