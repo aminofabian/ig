@@ -17,17 +17,17 @@ const Header = ({ label }: HeaderProps) => {
       <div className="flex items-center gap-3 group">
         <div className="relative transition-transform duration-300 group-hover:scale-110">
           {/* <div className="absolute inset-0 bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" /> */}
-          <div className="w-[50px] h-[50px] bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" />
+          {/* <div className="w-[50px] h-[50px] bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" /> */}
 
 
-          {/* <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " /> */}
-          {/* <Image 
-  src="/igleadlogo.png" 
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " />
+          <Image 
+  src="/instagram-icon.png" 
   alt="" 
   width={50} 
   height={50}
   className="object-contain"
-/> */}
+/> 
         </div>
         <h1 className={cn(
           "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
