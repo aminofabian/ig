@@ -20,8 +20,8 @@ const Header = ({ label }: HeaderProps) => {
           <Image 
             src="/instagram-icon.png" 
             alt="" 
-            width={50} 
-            height={50}
+            width={70} 
+            height={70}
             className="object-contain relative z-10 drop-shadow-[0_0_8px_rgba(240,89,218,0.5)]"
           />
         </div>
