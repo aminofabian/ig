@@ -37,31 +37,33 @@ export const NewVerificationForm = () => {
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <CardWrapper
-        headerLabel="Confirming Your Verification"
-        backButtonLabel="Back to Login"
-        backButtonHref="/auth/login"
-      >
-        <div className="flex flex-col items-center justify-center w-full p-6 space-y-4">
-          {!success && !error && (
-            <div className="py-8">
-              <BeatLoader color="#3b82f6" />
-            </div>
-          )}
-          
-          {success && (
-            <div className="w-full">
-              <FormSuccess message={success} />
-            </div>
-          )}
-          
-          {!success && error && (
-            <div className="w-full">
-              <FormError message={error} />
-            </div>
-          )}
-        </div>
-      </CardWrapper>
+      <div className="w-full max-w-md px-4">
+        <CardWrapper
+          headerLabel="Confirming Your Verification"
+          backButtonLabel="Back to Login"
+          backButtonHref="/auth/login"
+        >
+          <div className="flex flex-col items-center justify-center w-full p-6 space-y-4">
+            {!success && !error && (
+              <div className="py-8">
+                <BeatLoader color="#3b82f6" />
+              </div>
+            )}
+            
+            {success && (
+              <div className="w-full">
+                <FormSuccess message={success} />
+              </div>
+            )}
+            
+            {!success && error && (
+              <div className="w-full">
+                <FormError message={error} />
+              </div>
+            )}
+          </div>
+        </CardWrapper>
+      </div>
     </div>
   )
 }
