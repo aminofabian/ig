@@ -132,7 +132,7 @@ export default function LeadGenerator() {
   return (
     <div className="min-h-screen bg-zinc-900 text-slate-50">
       <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6 text-slate-50">Instagram Lead Generator</h1>
+        <h1 className="text-3xl font-bold mb-6 text-slate-50">Instagram Account Search</h1>
         
         <div className="flex gap-4 mb-6">
           <Input

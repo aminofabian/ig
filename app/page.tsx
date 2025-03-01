@@ -115,12 +115,12 @@ const HomePage = () => {
     //   stats: "Real-time data"
     // },
     {
-      label: "Lead Generator",
+      label: "Account Search",
       icon: User2,
       color: "text-[#f059da]",
       bgColor: "bg-[#f059da]/10",
       href: "/leadgenerator",
-      description: "Customize your experience",
+      description: "Search Accounts on Instagram",
       stats: "Full control"
     }
   ];
