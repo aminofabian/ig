@@ -1,6 +1,9 @@
 import { Jost } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import logoImage from '../../public/igleadlogo.png';
+
 
 const font = Jost({
   subsets: ["latin"],
@@ -21,13 +24,19 @@ const Header = ({ label }: HeaderProps) => {
           {/* <div className="absolute inset-0 bg-gradient-to-r from-[#f059da] to-[#a03494] rounded-full" /> */}
 
           <div className="absolute inset-0 bg-gradient-to-r from-[#f059da]/30 to-[#a03494]/30 rounded-full " />
-          <Image 
+
+<Avatar className="h-8 w-8">
+  <AvatarImage src="/default-avatar.png" />
+  <Image src={logoImage} alt="" className="h-8 w-8" />
+  {/* <img src={logoImage} alt="logo" className="h-8 w-8" /> */}
+</Avatar>
+          {/* <Image 
   src="/instagram-icon.png" 
   alt="" 
   width={50} 
   height={50}
   className="object-contain"
-/> 
+/>  */}
         </div>
         <h1 className={cn(
           "text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#f059da] to-[#a03494]",
