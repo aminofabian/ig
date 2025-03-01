@@ -22,7 +22,7 @@ const Header = ({ label }: HeaderProps) => {
 
 <Avatar className="h-8 w-8">
   <AvatarImage src="/default-avatar.png" />
-  <Image src={logoImage} alt="logo" className="h-8 w-8" />
+  <Image src={logoImage} alt="" className="h-8 w-8" />
   {/* <img src={logoImage} alt="logo" className="h-8 w-8" /> */}
 </Avatar>
         {/* <div className="relative transition-transform duration-300 group-hover:scale-110">
