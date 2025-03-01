@@ -48,7 +48,8 @@ function SubscriptionCheck() {
     checkSubscription();
   }, [pathname]);
 
-  return <SubscriptionRequiredModal isOpen={showModal} onOpenChange={setShowModal} />;
+  // return <SubscriptionRequiredModal isOpen={showModal} onOpenChange={setShowModal} />;
+  return ""
 }
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
