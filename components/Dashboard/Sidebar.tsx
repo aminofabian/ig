@@ -59,7 +59,7 @@ const routes = {
     {
       label: "Instagram Leads",
       icon: User,
-      href: "/instagram-leads",
+      href: "/generate-leads",
       // href: "/leadgenerator",
       color: "text-[#f059da]",
     },
