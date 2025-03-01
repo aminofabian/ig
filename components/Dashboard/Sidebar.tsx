@@ -6,6 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import logoImage from '../../public/igleadlogo.png';
+
+
 import { 
   LayoutDashboard,
   User,
@@ -96,13 +100,28 @@ const Sidebar = () => {
         <Link href="/" className="flex items-center pl-3 mb-14 group">
           <div className="relative w-10 h-10 mr-3 transform group-hover:scale-110 transition-all duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-[#f059da]/20 to-[#f059da]/5 rounded-xl blur-md group-hover:blur-lg transition-all duration-300" />
-            <Image
+
+
+
+<Avatar className="h-8 w-8">
+  <AvatarImage src="/default-avatar.png" />
+  <Image src={logoImage} alt="" className="h-8 w-8" />
+  {/* <img src={logoImage} alt="logo" className="h-8 w-8" /> */}
+</Avatar>
+            {/* <Image
               src="/instagram-icon.png"
               alt="Logo"
               fill
               className="object-contain drop-shadow-lg z-10 relative"
               priority
-            />
+            /> */}
+
+
+
+
+
+
+
             {/* Shine effect */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rotate-45" />
           </div>
