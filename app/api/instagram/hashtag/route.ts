@@ -57,7 +57,10 @@ export async function GET(request: Request) {
     }
 
     const rapidApiKey = process.env.RAPIDAPI_KEY;
-    const rapidApiHost = process.env.RAPIDAPI_HOST;
+    // const rapidApiHost = process.env.RAPIDAPI_HOST;
+    const rapidApiHost = "social-api4.p.rapidapi.com";
+
+    
 
     if (!rapidApiKey || !rapidApiHost) {
       console.error('Missing required environment variables:');
