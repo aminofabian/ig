@@ -4,12 +4,22 @@ import { usePathname } from "next/navigation";
 import { Toaster } from "sonner";
 import Navbar from "@/components/Dashboard/Navbar";
 import Sidebar from "@/components/Dashboard/Sidebar";
+import { useEffect, useState } from "react";
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname(); // Get the pathname dynamically
-  const isProfilePage = /^\/profile\/[^/]+$/.test(pathname || ""); // Matches /profile/{username}
+  // const pathname = usePathname(); // Get the pathname dynamically
+  // const isProfilePage = /^\/profile\/[^/]+$/.test(pathname || ""); // Matches /profile/{username}
 
-  console.log("Current Pathname:", pathname); // Debug: Log pathname to verify correctness
+  // console.log("Current Pathname:", pathname); // Debug: Log pathname to verify correctness
+
+
+  const [clientPathname, setClientPathname] = useState<string | null>(null);
+
+  useEffect(() => {
+    setClientPathname(window.location.pathname);
+  }, []);
+  
+  const isProfilePage = clientPathname ? /^\/profile\/[^/]+$/.test(clientPathname) : false;
 
   return (
     <div className="relative bg-[#0a0a0a]">
