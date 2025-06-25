@@ -58,7 +58,7 @@ export async function GET(request: Request) {
 
     const rapidApiKey = process.env.RAPIDAPI_KEY;
     // const rapidApiHost = process.env.RAPIDAPI_HOST;
-    const rapidApiHost = "https://social-api4.p.rapidapi.com";
+    const rapidApiHost = "social-api4.p.rapidapi.com";
 
     
 
