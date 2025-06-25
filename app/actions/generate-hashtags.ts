@@ -7,7 +7,7 @@ export async function generateHashtagsAction(input: string) {
 
   try {
     // const response = await fetch('https://open-ai21.p.rapidapi.com/claude3', {
-    const response = await fetch('https://hash-tag-generator.p.rapidapi.com/get_has_tags', {
+    const response = await fetch('https://open-ai21.p.rapidapi.com/claude3', {
 
       method: 'POST',
       headers: {
